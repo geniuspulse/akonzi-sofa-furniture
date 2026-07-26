@@ -121,8 +121,8 @@ export default function CheckoutForm({ settings }) {
 
   const handleNextStep2 = (e) => {
     e.preventDefault();
-    if (!delivery.zone) {
-      setError('Please select a delivery zone.');
+    if (!delivery.zone.trim()) {
+      setError('Please enter your delivery location.');
       return;
     }
     setError('');
@@ -295,21 +295,28 @@ export default function CheckoutForm({ settings }) {
             </div>
 
             <div className="checkout-form-group">
-              <label className="checkout-label">Delivery Zone <span className="text-danger">*</span></label>
-              <select
+              <label className="checkout-label">Delivery Location <span className="text-danger">*</span></label>
+              <input
+                type="text"
                 className="checkout-input"
                 value={delivery.zone}
                 onChange={(e) => setDelivery({ ...delivery, zone: e.target.value })}
+                placeholder="e.g. Area 18, Kawale, or any specific location"
                 required
-              >
-                <option value="">-- Select Delivery Zone --</option>
-                <option value="Lilongwe City">Lilongwe City</option>
-                <option value="Area 47">Area 47</option>
-                <option value="Area 49">Area 49</option>
-                <option value="Area 25">Area 25</option>
-                <option value="Lilongwe Rural">Lilongwe Rural</option>
-                <option value="Other">Other</option>
-              </select>
+              />
+              <div className="zone-quick-picks">
+                <span className="zone-quick-label">Quick pick:</span>
+                {['Lilongwe City', 'Area 47', 'Area 49', 'Area 25', 'Lilongwe Rural'].map(z => (
+                  <button
+                    key={z}
+                    type="button"
+                    className={`zone-chip ${delivery.zone === z ? 'zone-chip-active' : ''}`}
+                    onClick={() => setDelivery({ ...delivery, zone: z })}
+                  >
+                    {z}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="checkout-form-group">
@@ -407,7 +414,7 @@ export default function CheckoutForm({ settings }) {
               </div>
               <div className="review-section">
                 <h5>Delivery Details</h5>
-                <p><strong>Zone:</strong> {delivery.zone}</p>
+                <p><strong>Location:</strong> {delivery.zone}</p>
                 {delivery.preferredDate && (
                   <p><strong>Preferred Date:</strong> {new Date(delivery.preferredDate).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 )}
@@ -969,6 +976,56 @@ export default function CheckoutForm({ settings }) {
           }
         }
       `}</style>
+
+        <style jsx="true">{`
+          .zone-quick-picks {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+          }
+          .zone-quick-label {
+            font-size: 0.85rem;
+            color: var(--text-muted, #8A7560);
+            margin-right: 4px;
+          }
+          .zone-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border, #E8DCC8);
+            background: transparent;
+            color: var(--text-dark, #2C1810);
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .zone-chip:hover {
+            border-color: var(--brown, #6B4226);
+            background: rgba(107, 66, 38, 0.05);
+          }
+          .zone-chip-active {
+            border-color: var(--brown, #6B4226);
+            background: var(--brown, #6B4226);
+            color: #fff;
+          }
+          .zone-chip-active:hover {
+            background: var(--brown-dark, #5a3520);
+            color: #fff;
+          }
+          @media (max-width: 480px) {
+            .zone-quick-picks {
+              gap: 6px;
+            }
+            .zone-chip {
+              padding: 5px 10px;
+              font-size: 0.8rem;
+            }
+          }
+        `}</style>
     </div>
   );
 }
