@@ -351,28 +351,30 @@ export default function CheckoutForm({ settings }) {
               <p>Please double check your order details and customer details before submitting.</p>
             </div>
 
-            {/* Items review table */}
+            {/* Items review — clean card per item */}
             <div className="checkout-review">
-              <div className="review-header">Cart Items</div>
-              {cart.map((item) => (
+              <div className="review-header">
+                <span>Your Items</span>
+                <span className="review-header-count">{cart.length} {cart.length === 1 ? 'item' : 'items'}</span>
+              </div>
+              {cart.map((item, idx) => (
                 <div key={item.key} className="review-item">
-                  <div className="review-item-info">
-                    <h4>{item.name}</h4>
+                  <div className="review-item-top">
+                    <span className="review-item-num">{idx + 1}</span>
+                    <h4 className="review-item-name">{item.name}</h4>
+                    <span className="review-item-price">
+                      MWK {((item.price || 0) * item.quantity).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="review-item-bottom">
                     {item.selectedVariations && Object.keys(item.selectedVariations).length > 0 && (
-                      <div className="review-item-meta">
-                        {Object.entries(item.selectedVariations).map(([key, value]) => (
-                          <span key={key} style={{ marginRight: '12px' }}>
-                            <strong>{key}:</strong> {value}
-                          </span>
+                      <div className="review-chips">
+                        {Object.entries(item.selectedVariations).map(([k, v]) => (
+                          <span key={k} className="review-chip"><strong>{k}:</strong> {v}</span>
                         ))}
                       </div>
                     )}
-                    <div className="review-item-meta">
-                      Quantity: <strong>{item.quantity}</strong>
-                    </div>
-                  </div>
-                  <div className="review-item-price">
-                    MWK {((item.price || 0) * item.quantity).toLocaleString()}
+                    <span className="review-qty">Qty: {item.quantity} &times; MWK {(item.price || 0).toLocaleString()}</span>
                   </div>
                 </div>
               ))}
@@ -621,45 +623,94 @@ export default function CheckoutForm({ settings }) {
 
         .checkout-review {
           border: 2px solid var(--border, #E8DCC8);
-          border-radius: var(--radius, 12px);
+          border-radius: 16px;
           overflow: hidden;
           margin-bottom: 24px;
         }
         .review-header {
           background: var(--cream-light, #FAF7F2);
-          padding: 16px 24px;
+          padding: 14px 20px;
           font-weight: 700;
-          font-size: 1.05rem;
+          font-size: 1rem;
           color: var(--text-dark, #2C1810);
           border-bottom: 2px solid var(--border, #E8DCC8);
-        }
-        .review-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px 24px;
+        }
+        .review-header-count {
+          font-size: 0.85rem;
+          background: var(--brown, #6B4226);
+          color: #FAF7F2;
+          padding: 2px 10px;
+          border-radius: 20px;
+          font-weight: 600;
+        }
+        .review-item {
+          padding: 14px 20px;
           border-bottom: 1px solid var(--border, #E8DCC8);
           background: #fff;
         }
         .review-item:last-child {
           border-bottom: none;
         }
-        .review-item-info h4 {
-          font-size: 1.1rem;
-          color: var(--text-dark, #2C1810);
-          margin-bottom: 4px;
-          font-weight: 600;
+        .review-item-top {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 8px;
         }
-        .review-item-meta {
-          font-size: 0.85rem;
-          color: var(--text-muted, #8A7560);
-          margin-top: 4px;
+        .review-item-num {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: var(--amber, #D4A574);
+          color: var(--brown-dark, #4A2C17);
+          font-size: 0.75rem;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .review-item-name {
+          font-size: 1rem;
+          font-weight: 700;
+          color: var(--text-dark, #2C1810);
+          flex: 1;
+          margin: 0;
+          line-height: 1.3;
         }
         .review-item-price {
           font-family: var(--font-heading, serif);
-          font-weight: 700;
-          font-size: 1.15rem;
+          font-weight: 800;
+          font-size: 1rem;
           color: var(--brown, #6B4226);
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .review-item-bottom {
+          padding-left: 34px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .review-chips {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+        .review-chip {
+          background: var(--cream-light, #FAF7F2);
+          border: 1px solid var(--border, #E8DCC8);
+          border-radius: 20px;
+          padding: 2px 10px;
+          font-size: 0.8rem;
+          color: var(--text-body, #5A3E2B);
+        }
+        .review-qty {
+          font-size: 0.82rem;
+          color: var(--text-muted, #8A7560);
         }
 
         .checkout-summary {
@@ -747,58 +798,61 @@ export default function CheckoutForm({ settings }) {
         }
 
         .checkout-btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          padding: 14px 32px;
-          font-family: var(--font-body), sans-serif;
-          font-size: 1rem;
-          font-weight: 600;
-          border: none;
-          border-radius: 50px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-align: center;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 10px !important;
+          padding: 18px 36px !important;
+          font-family: var(--font-body), sans-serif !important;
+          font-size: 1.05rem !important;
+          font-weight: 700 !important;
+          border: 2px solid transparent !important;
+          border-radius: 50px !important;
+          cursor: pointer !important;
+          transition: all 0.3s ease !important;
+          text-align: center !important;
+          text-decoration: none !important;
+          line-height: 1.4 !important;
+          appearance: none !important;
+          -webkit-appearance: none !important;
         }
         .checkout-btn-primary {
-          background: var(--brown, #6B4226);
-          color: var(--cream-light, #FAF7F2);
-          box-shadow: 0 4px 15px rgba(107, 66, 38, 0.25);
+          background: #6B4226 !important;
+          background-color: #6B4226 !important;
+          color: #FAF7F2 !important;
+          border-color: #6B4226 !important;
+          box-shadow: 0 6px 20px rgba(107, 66, 38, 0.35) !important;
+          width: 100% !important;
         }
         .checkout-btn-primary:hover:not(:disabled) {
-          background: var(--brown-dark, #4A2C17);
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(107, 66, 38, 0.35);
+          background: #4A2C17 !important;
+          background-color: #4A2C17 !important;
+          transform: translateY(-2px) !important;
+          box-shadow: 0 8px 24px rgba(107, 66, 38, 0.45) !important;
         }
         .checkout-btn-primary:disabled {
-          opacity: 0.55;
-          cursor: not-allowed;
+          opacity: 0.55 !important;
+          cursor: not-allowed !important;
+          transform: none !important;
         }
         .checkout-btn-secondary {
-          background: transparent;
-          color: var(--brown, #6B4226);
-          border: 2px solid var(--brown, #6B4226);
+          background: transparent !important;
+          background-color: transparent !important;
+          color: #6B4226 !important;
+          border: 2px solid #6B4226 !important;
+          padding: 16px 28px !important;
         }
-        .checkout-btn-secondary:hover {
-          background: var(--brown, #6B4226);
-          color: var(--cream-light, #FAF7F2);
+        .checkout-btn-secondary:hover:not(:disabled) {
+          background: #6B4226 !important;
+          background-color: #6B4226 !important;
+          color: #FAF7F2 !important;
         }
 
         .btn-container {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 32px;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-        .btn-container .checkout-btn-primary {
-          flex: 1;
-          min-width: 160px;
-          padding: 16px 28px;
-          font-size: 1.05rem;
-          letter-spacing: 0.02em;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 12px !important;
+          margin-top: 32px !important;
         }
 
         .checkout-error-banner {
@@ -895,7 +949,7 @@ export default function CheckoutForm({ settings }) {
 
         @media (max-width: 600px) {
           .checkout-step {
-            padding: 24px 16px;
+            padding: 20px 14px;
           }
           .info-grid {
             grid-template-columns: 1fr;
@@ -907,13 +961,11 @@ export default function CheckoutForm({ settings }) {
           .checkout-step-labels span {
             font-size: 0.65rem;
           }
-          .btn-container {
-            flex-direction: column-reverse;
-            gap: 12px;
+          .review-item-bottom {
+            padding-left: 0;
           }
-          .btn-container .checkout-btn-primary,
-          .btn-container .checkout-btn-secondary {
-            width: 100%;
+          .checkout-review-summary-details {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
