@@ -139,35 +139,55 @@ export async function updateOrderStatus(orderId, status) {
   }
 }
 
-// Build WhatsApp order message
+// Build WhatsApp order message — rich cart summary with clickable product links
 export function buildWhatsAppOrderMessage(order) {
   const settings = getSettings();
-  let msg = `*New Order - ${order.id}*\n`;
-  msg += `From: ${order.customer.name}\n\n`;
-  msg += `*Items:*\n`;
-  order.items.forEach(item => {
-    const price = item.price ? `MWK ${item.price.toLocaleString()}` : 'Price on request';
-    msg += `• ${item.name}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://akonzi-sofa-furniture.vercel.app';
+
+  let msg = `*NEW ORDER - ${order.id}*\n`;
+  msg += `----------------------------------\n\n`;
+
+  msg += `*ORDER SUMMARY*\n`;
+  order.items.forEach((item, i) => {
+    const unitPrice = item.price ? `MWK ${Number(item.price).toLocaleString()}` : 'Price on request';
+    const lineTotal = item.price ? `MWK ${(item.price * item.quantity).toLocaleString()}` : 'TBD';
+    msg += `\n${i + 1}. *${item.name}*\n`;
     if (item.selectedVariations && Object.keys(item.selectedVariations).length > 0) {
       Object.entries(item.selectedVariations).forEach(([k, v]) => {
-        msg += `\n   - ${k}: ${v}`;
+        msg += `   - ${k}: ${v}\n`;
       });
     }
-    msg += `\n   Qty: ${item.quantity} × ${price}\n`;
+    msg += `   Qty: ${item.quantity} x ${unitPrice} = ${lineTotal}\n`;
+    if (item.id) {
+      msg += `   Link: ${siteUrl}/products/${item.id}\n`;
+    }
   });
+
+  msg += `\n----------------------------------\n`;
   if (order.total > 0) {
-    msg += `\n*Subtotal: MWK ${order.total.toLocaleString()}*\n`;
+    msg += `*TOTAL: MWK ${Number(order.total).toLocaleString()}*\n`;
+    msg += `Delivery: FREE (Lilongwe)\n`;
+  } else {
+    msg += `*TOTAL: Price on request*\n`;
   }
-  msg += `\n*Customer Details:*\n`;
+  msg += `----------------------------------\n\n`;
+
+  msg += `*CUSTOMER*\n`;
   msg += `Name: ${order.customer.name}\n`;
   msg += `Phone: ${order.customer.phone}\n`;
   if (order.customer.email) msg += `Email: ${order.customer.email}\n`;
   if (order.customer.address) msg += `Address: ${order.customer.address}\n`;
-  msg += `\n*Delivery:*\n`;
+
+  msg += `\n*DELIVERY*\n`;
   msg += `Zone: ${order.delivery.zone || 'Lilongwe'}\n`;
+  if (order.delivery.preferredDate) {
+    const d = new Date(order.delivery.preferredDate);
+    msg += `Date: ${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}\n`;
+  }
   if (order.delivery.notes) msg += `Notes: ${order.delivery.notes}\n`;
-  if (order.delivery.preferredDate) msg += `Preferred Date: ${order.delivery.preferredDate}\n`;
-  msg += `\nPlease confirm this order. Thank you!`;
+
+  msg += `\n----------------------------------\n`;
+  msg += `Please confirm this order and arrange delivery. Thank you!`;
 
   return msg;
 }

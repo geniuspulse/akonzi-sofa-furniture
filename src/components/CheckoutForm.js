@@ -153,6 +153,7 @@ export default function CheckoutForm({ settings }) {
         },
         body: JSON.stringify({
           items: cart.map(item => ({
+            id: item.id,
             name: item.name,
             price: item.price,
             quantity: item.quantity,
@@ -190,22 +191,26 @@ export default function CheckoutForm({ settings }) {
   return (
     <div id="checkout-flow" style={{ width: '100%' }}>
       {/* Step Indicator */}
-      <div className="checkout-step-indicator">
-        <div className={`step-dot ${step >= 1 ? (step > 1 ? 'completed' : 'active') : ''}`}>
-          1
-          <span className="step-label">Customer Info</span>
+      <div className="checkout-steps-wrap">
+        <div className="checkout-step-indicator">
+          <div className={`step-dot ${step >= 1 ? (step > 1 ? 'completed' : 'active') : ''}`}>
+            {step > 1 ? <span>✓</span> : <span>1</span>}
+          </div>
+          <div className={`step-dot ${step >= 2 ? (step > 2 ? 'completed' : 'active') : ''}`}>
+            {step > 2 ? <span>✓</span> : <span>2</span>}
+          </div>
+          <div className={`step-dot ${step >= 3 ? (step > 3 ? 'completed' : 'active') : ''}`}>
+            {step > 3 ? <span>✓</span> : <span>3</span>}
+          </div>
+          <div className={`step-dot ${step === 4 ? 'completed' : ''}`}>
+            <span>✓</span>
+          </div>
         </div>
-        <div className={`step-dot ${step >= 2 ? (step > 2 ? 'completed' : 'active') : ''}`}>
-          2
-          <span className="step-label">Delivery Details</span>
-        </div>
-        <div className={`step-dot ${step >= 3 ? (step > 3 ? 'completed' : 'active') : ''}`}>
-          3
-          <span className="step-label">Order Review</span>
-        </div>
-        <div className={`step-dot ${step === 4 ? 'completed' : ''}`}>
-          ✓
-          <span className="step-label">Done</span>
+        <div className="checkout-step-labels">
+          <span className={step === 1 ? 'label-active' : step > 1 ? 'label-done' : ''}>Info</span>
+          <span className={step === 2 ? 'label-active' : step > 2 ? 'label-done' : ''}>Delivery</span>
+          <span className={step === 3 ? 'label-active' : step > 3 ? 'label-done' : ''}>Review</span>
+          <span className={step === 4 ? 'label-active' : ''}>Done</span>
         </div>
       </div>
 
@@ -276,7 +281,7 @@ export default function CheckoutForm({ settings }) {
             <div className="btn-container">
               <div></div>
               <button type="submit" className="checkout-btn checkout-btn-primary">
-                Next: Delivery Details ➔
+                Continue →
               </button>
             </div>
           </form>
@@ -333,7 +338,7 @@ export default function CheckoutForm({ settings }) {
                 ⬅ Back
               </button>
               <button type="submit" className="checkout-btn checkout-btn-primary">
-                Next: Order Review ➔
+                Continue →
               </button>
             </div>
           </form>
@@ -465,21 +470,26 @@ export default function CheckoutForm({ settings }) {
       </div>
 
       <style jsx="true">{`
+        /* Steps wrapper */
+        .checkout-steps-wrap {
+          max-width: 420px;
+          margin: 0 auto 48px auto;
+        }
+
+        /* Dots row */
         .checkout-step-indicator {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          max-width: 600px;
-          margin: 0 auto 50px auto;
           position: relative;
-          padding: 0 10px;
+          padding: 0 4px;
         }
         .checkout-step-indicator::before {
           content: '';
           position: absolute;
           top: 20px;
-          left: 40px;
-          right: 40px;
+          left: 24px;
+          right: 24px;
           height: 3px;
           background: var(--border, #E8DCC8);
           z-index: 1;
@@ -493,17 +503,18 @@ export default function CheckoutForm({ settings }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-weight: bold;
+          font-weight: 700;
           position: relative;
           z-index: 2;
           color: var(--text-muted, #8A7560);
           transition: all 0.3s ease;
           font-size: 0.95rem;
+          flex-shrink: 0;
         }
         .step-dot.active {
           background: var(--brown, #6B4226);
           border-color: var(--brown, #6B4226);
-          color: var(--cream-light, #FAF7F2);
+          color: #fff;
           box-shadow: 0 0 0 5px rgba(107, 66, 38, 0.15);
         }
         .step-dot.completed {
@@ -511,23 +522,30 @@ export default function CheckoutForm({ settings }) {
           border-color: var(--amber, #D4A574);
           color: var(--brown-dark, #4A2C17);
         }
-        .step-label {
-          position: absolute;
-          top: 48px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 0.75rem;
-          font-weight: 700;
-          white-space: nowrap;
-          color: var(--text-muted, #8A7560);
+
+        /* Labels row — separate, no overflow */
+        .checkout-step-labels {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 10px;
+          padding: 0 0px;
+        }
+        .checkout-step-labels span {
+          font-size: 0.72rem;
+          font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.06em;
+          color: var(--text-muted, #8A7560);
+          text-align: center;
+          width: 40px;
+          line-height: 1.2;
         }
-        .step-dot.active .step-label {
+        .checkout-step-labels .label-active {
           color: var(--brown, #6B4226);
+          font-weight: 700;
         }
-        .step-dot.completed .step-label {
-          color: var(--brown-light, #8B5A2B);
+        .checkout-step-labels .label-done {
+          color: var(--amber, #D4A574);
         }
 
         .checkout-step {
@@ -771,8 +789,16 @@ export default function CheckoutForm({ settings }) {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-top: 30px;
-          gap: 16px;
+          margin-top: 32px;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .btn-container .checkout-btn-primary {
+          flex: 1;
+          min-width: 160px;
+          padding: 16px 28px;
+          font-size: 1.05rem;
+          letter-spacing: 0.02em;
         }
 
         .checkout-error-banner {
@@ -875,18 +901,18 @@ export default function CheckoutForm({ settings }) {
             grid-template-columns: 1fr;
             gap: 0;
           }
-          .checkout-step-indicator {
-            margin-bottom: 40px;
+          .checkout-steps-wrap {
+            margin-bottom: 36px;
           }
-          .step-label {
+          .checkout-step-labels span {
             font-size: 0.65rem;
-            top: 45px;
           }
           .btn-container {
             flex-direction: column-reverse;
             gap: 12px;
           }
-          .btn-container button {
+          .btn-container .checkout-btn-primary,
+          .btn-container .checkout-btn-secondary {
             width: 100%;
           }
         }
