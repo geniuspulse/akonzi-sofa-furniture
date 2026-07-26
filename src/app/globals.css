@@ -139,6 +139,15 @@ img { max-width: 100%; display: block; }
 .product-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; flex: 1; }
 .product-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; border-top: 1px solid var(--border); gap: 8px; }
 .product-price { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--brown); }
+
+/* New price block — sits between name and description */
+.product-price-block { display: flex; align-items: baseline; gap: 8px; margin: 6px 0 10px 0; }
+.product-price-sale { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--brown); }
+.product-price-original { font-size: 0.88rem; color: var(--text-muted); text-decoration: line-through; font-weight: 400; }
+.product-price-main { font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--brown); }
+
+/* Card footer: stock + action buttons */
+.product-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--border); gap: 8px; margin-top: 12px; }
 .product-actions { display: flex; gap: 8px; }
 .btn-cart { background: var(--brown); color: var(--cream-light); padding: 8px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; transition: var(--transition); }
 .btn-cart:hover { background: var(--brown-dark); }
@@ -348,6 +357,8 @@ img { max-width: 100%; display: block; }
   .nav-menu { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: var(--warm-white); flex-direction: column; padding: 80px 30px 30px; gap: 20px; box-shadow: -5px 0 30px rgba(0,0,0,0.1); transition: right 0.3s ease; }
   .nav-menu.active { right: 0; }
   .nav-menu a { color: var(--text-body) !important; text-shadow: none !important; font-size: 1.1rem; }
+  .nav-menu a.nav-cta { color: #FAF7F2 !important; background: var(--brown, #6B4226) !important; display: block; text-align: center; border-radius: 50px; padding: 14px 28px; font-weight: 700; margin-top: 8px; }
+  .nav-menu a.nav-cta:hover { background: var(--brown-dark, #4A2C17) !important; }
   .feature-bar-inner { grid-template-columns: repeat(2,1fr); gap: 16px; }
   .about-grid { grid-template-columns: 1fr; gap: 40px; }
   .about-image img { height: 400px; }

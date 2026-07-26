@@ -65,41 +65,32 @@ export default function ProductCard({ product }) {
       </div>
       <div className="product-info">
         <h3 className="product-name">{name}</h3>
-        <p className="product-desc">{description}</p>
-        
-        <div
-          className="product-stock"
-          style={{
-            fontSize: '0.85rem',
-            fontWeight: '600',
-            color: getStockColor(),
-            marginBottom: '12px',
-          }}
-        >
-          {getStockText()}
+
+        {/* Price — right below name */}
+        <div className="product-price-block">
+          {salePrice && salePrice < price ? (
+            <>
+              <span className="product-price-sale">{formatLocalPrice(salePrice)}</span>
+              <span className="product-price-original">{formatLocalPrice(price)}</span>
+            </>
+          ) : (
+            <span className="product-price-main">{formatLocalPrice(price)}</span>
+          )}
         </div>
 
-        <div className="product-footer">
-          <span className="product-price">
-            {salePrice && salePrice < price ? (
-              <>
-                <span
-                  style={{
-                    textDecoration: 'line-through',
-                    color: 'var(--text-muted)',
-                    fontSize: '0.9rem',
-                    marginRight: '8px',
-                    fontWeight: 'normal',
-                  }}
-                >
-                  {formatLocalPrice(price)}
-                </span>
-                <span>{formatLocalPrice(salePrice)}</span>
-              </>
-            ) : (
-              formatLocalPrice(price)
-            )}
-          </span>
+        <p className="product-desc">{description}</p>
+
+        <div className="product-card-footer">
+          <div
+            className="product-stock"
+            style={{
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              color: getStockColor(),
+            }}
+          >
+            {getStockText()}
+          </div>
           <div className="product-actions">
             <Link
               href={`/products/${id}`}
@@ -122,7 +113,7 @@ export default function ProductCard({ product }) {
                   : { background: 'var(--brown)', color: '#fff' }
               }
             >
-              {added ? 'Added' : 'Order'}
+              {added ? 'Added ✓' : 'Order'}
             </button>
           </div>
         </div>
