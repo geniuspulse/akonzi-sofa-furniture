@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       const data = await res.json();
@@ -26,7 +27,7 @@ export default function LoginPage() {
         router.push('/admin');
         router.refresh();
       } else {
-        setError(data.error || 'Invalid password');
+        setError(data.error || 'Invalid email or password.');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -38,24 +39,63 @@ export default function LoginPage() {
   return (
     <div className="admin-login">
       <div className="admin-login-card">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--brown)', color: 'var(--amber)', borderRadius: '8px', width: '44px', height: '44px', fontWeight: 'bold', fontSize: '1.6rem' }}>
+
+        {/* Branded Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '28px' }}>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--brown, #6B4226)', color: 'var(--amber, #D4A574)',
+            borderRadius: '12px', width: '48px', height: '48px',
+            fontWeight: 'bold', fontSize: '1.7rem', fontFamily: 'Georgia, serif',
+            boxShadow: '0 2px 8px rgba(107,66,38,0.25)',
+          }}>
             A
           </div>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem', color: 'var(--brown-dark)', fontWeight: '700', lineHeight: 1 }}>AKONZI</div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--amber)', letterSpacing: '0.1em', fontWeight: '600', textTransform: 'uppercase', marginTop: '2px' }}>SOFA FURNITURE</div>
+            <div style={{ fontFamily: 'var(--font-heading, Georgia)', fontSize: '1.25rem', color: 'var(--brown-dark, #2C1810)', fontWeight: '700', lineHeight: 1.1, letterSpacing: '0.04em' }}>
+              AKONZI
+            </div>
+            <div style={{ fontSize: '0.65rem', color: 'var(--amber, #C08040)', letterSpacing: '0.14em', fontWeight: '600', textTransform: 'uppercase', marginTop: '2px' }}>
+              SOFA FURNITURE
+            </div>
           </div>
         </div>
 
-        <h2>Admin Panel</h2>
-        <p>Please enter your administrator password to continue.</p>
+        <h2 style={{ marginBottom: '6px' }}>Admin Panel</h2>
+        <p style={{ marginBottom: '28px' }}>Sign in to manage your store.</p>
 
         {error && <div className="admin-login-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group" style={{ marginBottom: '20px' }}>
-            <label htmlFor="password" style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-dark)' }}>
+          {/* Email */}
+          <div className="form-group" style={{ marginBottom: '16px' }}>
+            <label htmlFor="email" style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-dark)' }}>
+              Email Address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@akonzifurniture.com"
+              required
+              autoComplete="email"
+              style={{
+                width: '100%', padding: '12px 16px',
+                borderRadius: 'var(--radius, 12px)',
+                border: '1.5px solid var(--border, #E8DCC8)',
+                outline: 'none', fontSize: '1rem',
+                fontFamily: 'inherit', background: '#fff',
+                transition: 'border-color 0.2s',
+              }}
+              onFocus={e => e.target.style.borderColor = 'var(--brown, #6B4226)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border, #E8DCC8)'}
+            />
+          </div>
+
+          {/* Password */}
+          <div className="form-group" style={{ marginBottom: '24px' }}>
+            <label htmlFor="password" style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', fontWeight: '500', color: 'var(--text-dark)' }}>
               Password
             </label>
             <input
@@ -65,22 +105,32 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
+              autoComplete="current-password"
               style={{
-                width: '100%',
-                padding: '12px 16px',
-                borderRadius: 'var(--radius)',
-                border: '1px solid var(--border)',
-                outline: 'none',
-                fontSize: '1rem',
-                transition: 'var(--transition)'
+                width: '100%', padding: '12px 16px',
+                borderRadius: 'var(--radius, 12px)',
+                border: '1.5px solid var(--border, #E8DCC8)',
+                outline: 'none', fontSize: '1rem',
+                fontFamily: 'inherit', background: '#fff',
+                transition: 'border-color 0.2s',
               }}
+              onFocus={e => e.target.style.borderColor = 'var(--brown, #6B4226)'}
+              onBlur={e => e.target.style.borderColor = 'var(--border, #E8DCC8)'}
             />
           </div>
 
-          <button type="submit" disabled={loading} className="btn btn-primary btn-full">
-            {loading ? 'Logging in...' : 'Access Dashboard'}
+          <button type="submit" disabled={loading} className="btn btn-primary btn-full" style={{ borderRadius: '50px', padding: '14px', fontSize: '1rem', fontWeight: '600' }}>
+            {loading ? 'Signing in...' : 'Access Dashboard'}
           </button>
         </form>
+
+        {/* Role legend */}
+        <div style={{ marginTop: '28px', paddingTop: '20px', borderTop: '1px solid var(--border, #E8DCC8)', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted, #8A7560)', lineHeight: 1.5 }}>
+            Team members: use your assigned email &amp; password.<br />
+            Contact your admin if you need access.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -2,13 +2,13 @@
 // Uses GitHub as the database — commits to the repo trigger Vercel rebuilds
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-const GITHUB_OWNER = process.env.GITHUB_OWNER || 'geniuspulse';
-const GITHUB_REPO = process.env.GITHUB_REPO || 'akonzi-sofa-furniture';
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
+export const GITHUB_OWNER = process.env.GITHUB_OWNER || 'geniuspulse';
+export const GITHUB_REPO = process.env.GITHUB_REPO || 'akonzi-sofa-furniture';
+export const GITHUB_BRANCH = process.env.GITHUB_BRANCH || 'main';
 
 const API_BASE = 'https://api.github.com';
 
-async function githubFetch(endpoint, options = {}) {
+export async function githubFetch(endpoint, options = {}) {
   if (!GITHUB_TOKEN) {
     throw new Error('GITHUB_TOKEN environment variable is not set');
   }
