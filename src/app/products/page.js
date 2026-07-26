@@ -41,11 +41,12 @@ export default async function ProductsPage({ searchParams }) {
       <Navbar settings={settings} />
 
       {/* Page Header */}
-      <section className="section section-cream" style={{ paddingTop: '140px', paddingBottom: '40px' }}>
+      <section className="section section-cream" style={{ paddingTop: '120px', paddingBottom: '40px' }}>
         <div className="container">
-          <div className="section-header" style={{ marginBottom: '20px' }}>
-            {saleCount > 0 && (
-              <div
+          {/* Sale ticker — full-width row ABOVE heading */}
+          {saleCount > 0 && (
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <span
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -56,13 +57,14 @@ export default async function ProductsPage({ searchParams }) {
                   borderRadius: '50px',
                   fontSize: '0.85rem',
                   fontWeight: '700',
-                  marginBottom: '20px',
                   boxShadow: 'var(--shadow)',
                 }}
               >
-                <span>🔥 {saleCount} Special Offers Active!</span>
-              </div>
-            )}
+                🔥 {saleCount} Special Offers Active!
+              </span>
+            </div>
+          )}
+          <div className="section-header" style={{ marginBottom: '20px' }}>
             <span className="section-eyebrow">Our Collection</span>
             <h1 className="section-title">Handcrafted Furniture Range</h1>
             <p className="section-subtitle">

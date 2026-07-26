@@ -1,54 +1,67 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/components/CartProvider';
 
 export default function Navbar({ settings }) {
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { cartCount } = useCart();
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+    <nav className="navbar navbar-solid">
       <div className="nav-container">
         {/* Logo */}
-        <Link href="/" className="nav-logo">
+        <Link href="/" className="nav-logo" onClick={() => setMenuOpen(false)}>
           <Image
             src="/images/akonzi-logo.png"
             alt="Akonzi Furniture & General Dealers"
             width={120}
             height={52}
-            style={{ objectFit: 'contain', height: '52px', width: 'auto', filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
+            style={{ objectFit: 'contain', height: '52px', width: 'auto' }}
             priority
           />
         </Link>
 
         {/* Desktop Menu */}
         <ul className={`nav-menu${menuOpen ? ' active' : ''}`} id="navMenu">
-          {['/', '/about', '/products', '/blog', '/contact'].map((href, i) => (
+          {[
+            { href: '/', label: 'Home' },
+            { href: '/about', label: 'About' },
+            { href: '/products', label: 'Collection' },
+            { href: '/blog', label: 'Blog' },
+            { href: '/contact', label: 'Contact' },
+          ].map(({ href, label }) => (
             <li key={href}>
               <Link href={href} className="nav-link" onClick={() => setMenuOpen(false)}>
-                {['Home', 'About', 'Collection', 'Blog', 'Contact'][i]}
+                {label}
               </Link>
             </li>
           ))}
+
+          {/* Cart icon + label */}
           <li>
             <Link href="/cart" className="nav-link cart-badge" onClick={() => setMenuOpen(false)} aria-label="Cart">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 01-8 0"/>
-              </svg>
-              {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', position: 'relative' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" style={{ flexShrink: 0 }}>
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                <span style={{ fontWeight: 600 }}>Cart</span>
+                {cartCount > 0 && (
+                  <span className="cart-count">{cartCount}</span>
+                )}
+              </span>
             </Link>
           </li>
-          <li><Link href="/contact" className="nav-link nav-cta" onClick={() => setMenuOpen(false)}>Order Now</Link></li>
+
+          {/* Order Now CTA */}
+          <li>
+            <Link href="/checkout" className="nav-link nav-cta" onClick={() => setMenuOpen(false)}>
+              Order Now
+            </Link>
+          </li>
         </ul>
 
         {/* Hamburger */}

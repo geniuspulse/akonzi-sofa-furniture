@@ -3,6 +3,62 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Helper to parse Specifications (Key: Value per line) into object
+const parseSpecifications = (text) => {
+  const obj = {};
+  if (!text) return obj;
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    const idx = line.indexOf(':');
+    if (idx !== -1) {
+      const key = line.slice(0, idx).trim();
+      const value = line.slice(idx + 1).trim();
+      if (key) {
+        obj[key] = value;
+      }
+    }
+  });
+  return obj;
+};
+
+// Helper to format Specifications object back to text
+const formatSpecifications = (obj) => {
+  if (!obj || typeof obj !== 'object') return '';
+  return Object.entries(obj)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n');
+};
+
+// Helper to parse Variations (Name: Option1, Option2 per line) into array of {name, options}
+const parseVariations = (text) => {
+  const arr = [];
+  if (!text) return arr;
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    const idx = line.indexOf(':');
+    if (idx !== -1) {
+      const name = line.slice(0, idx).trim();
+      const optionsStr = line.slice(idx + 1).trim();
+      if (name && optionsStr) {
+        const options = optionsStr.split(',').map(opt => opt.trim()).filter(Boolean);
+        arr.push({ name, options });
+      }
+    }
+  });
+  return arr;
+};
+
+// Helper to format Variations array back to text
+const formatVariations = (arr) => {
+  if (!arr || !Array.isArray(arr)) return '';
+  return arr
+    .map(item => {
+      const optionsStr = Array.isArray(item.options) ? item.options.join(', ') : '';
+      return `${item.name}: ${optionsStr}`;
+    })
+    .join('\n');
+};
+
 export default function ManageProductsForm({ initialProducts }) {
   const [products, setProducts] = useState(initialProducts || []);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -16,6 +72,13 @@ export default function ManageProductsForm({ initialProducts }) {
   const [badge, setBadge] = useState('');
   const [inStock, setInStock] = useState(true);
   const [featured, setFeatured] = useState(false);
+
+  // New fields state variables
+  const [salePrice, setSalePrice] = useState('');
+  const [stockCount, setStockCount] = useState(10);
+  const [imagesText, setImagesText] = useState('');
+  const [specificationsText, setSpecificationsText] = useState('');
+  const [variationsText, setVariationsText] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -35,6 +98,14 @@ export default function ManageProductsForm({ initialProducts }) {
     setBadge(product.badge || '');
     setInStock(product.inStock !== false);
     setFeatured(!!product.featured);
+    
+    // Populate new fields
+    setSalePrice(product.salePrice === null || product.salePrice === undefined ? '' : product.salePrice);
+    setStockCount(product.stockCount === null || product.stockCount === undefined ? 10 : product.stockCount);
+    setImagesText(Array.isArray(product.images) ? product.images.join(', ') : (product.image ? product.image : ''));
+    setSpecificationsText(formatSpecifications(product.specifications));
+    setVariationsText(formatVariations(product.variations));
+
     setError('');
     setSuccessMsg('');
     
@@ -52,6 +123,14 @@ export default function ManageProductsForm({ initialProducts }) {
     setBadge('');
     setInStock(true);
     setFeatured(false);
+
+    // Reset new fields
+    setSalePrice('');
+    setStockCount(10);
+    setImagesText('');
+    setSpecificationsText('');
+    setVariationsText('');
+
     setError('');
     setSuccessMsg('');
   };
@@ -90,17 +169,27 @@ export default function ManageProductsForm({ initialProducts }) {
       return;
     }
 
+    // Parse values
+    const parsedImages = imagesText
+      ? imagesText.split(/[,\n]/).map(img => img.trim()).filter(Boolean)
+      : [];
+
     const updatedProduct = {
       id,
       name,
       description,
       price: price === '' ? null : Number(price),
+      salePrice: salePrice === '' ? null : Number(salePrice),
       currency: 'MWK',
       image,
+      images: parsedImages,
       category,
       badge: badge === '' ? null : badge,
       inStock,
+      stockCount: stockCount === '' ? 10 : Number(stockCount),
       featured,
+      specifications: parseSpecifications(specificationsText),
+      variations: parseVariations(variationsText),
     };
 
     let newProductsList;
@@ -176,11 +265,13 @@ export default function ManageProductsForm({ initialProducts }) {
       )}
 
       {editingProduct && (
-        <div className="admin-card" style={{ border: '2px solid var(--amber)', background: 'var(--cream-light)' }}>
+        <div className="admin-card" style={{ border: '2px solid var(--amber)', background: 'var(--cream-light)', padding: '24px', borderRadius: 'var(--radius)', marginBottom: '32px' }}>
           <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px', marginBottom: '20px' }}>
             {editingProduct === 'new' ? 'Add New Furniture Product' : `Edit Product: ${editingProduct.name}`}
           </h3>
           <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            
+            {/* Row 1: Name + ID */}
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
               <div className="form-group">
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
@@ -212,6 +303,7 @@ export default function ManageProductsForm({ initialProducts }) {
               </div>
             </div>
 
+            {/* Row 2: Price + Sale Price + Stock Count */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
               <div className="form-group">
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
@@ -226,6 +318,36 @@ export default function ManageProductsForm({ initialProducts }) {
                 />
               </div>
 
+              <div className="form-group">
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+                  Sale Price (MWK) - optional
+                </label>
+                <input
+                  type="number"
+                  value={salePrice}
+                  onChange={(e) => setSalePrice(e.target.value)}
+                  placeholder="e.g. 22000"
+                  style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem' }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+                  Stock Count
+                </label>
+                <input
+                  type="number"
+                  value={stockCount}
+                  onChange={(e) => setStockCount(e.target.value)}
+                  placeholder="e.g. 10"
+                  required
+                  style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem' }}
+                />
+              </div>
+            </div>
+
+            {/* Row 3: Category + Badge + Image */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
               <div className="form-group">
                 <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
                   Category
@@ -261,22 +383,37 @@ export default function ManageProductsForm({ initialProducts }) {
                   style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem' }}
                 />
               </div>
+
+              <div className="form-group">
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+                  Primary Image Path
+                </label>
+                <input
+                  type="text"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                  placeholder="/images/hero-showroom.png"
+                  required
+                  style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem' }}
+                />
+              </div>
             </div>
 
+            {/* Row 4: Multiple Images */}
             <div className="form-group">
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
-                Image Path (relative to public directory)
+                Multiple Images (comma or newline separated paths)
               </label>
-              <input
-                type="text"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="/images/hero-showroom.png"
-                required
-                style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem' }}
+              <textarea
+                value={imagesText}
+                onChange={(e) => setImagesText(e.target.value)}
+                placeholder="/images/sofa-angle1.png, /images/sofa-angle2.png"
+                rows={2}
+                style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '1rem', fontFamily: 'inherit', resize: 'vertical' }}
               />
             </div>
 
+            {/* Row 5: Description */}
             <div className="form-group">
               <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
                 Description
@@ -291,6 +428,35 @@ export default function ManageProductsForm({ initialProducts }) {
               />
             </div>
 
+            {/* Row 6: Specifications */}
+            <div className="form-group">
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+                Specifications (Key: Value - one per line)
+              </label>
+              <textarea
+                value={specificationsText}
+                onChange={(e) => setSpecificationsText(e.target.value)}
+                placeholder="Material: Premium Mahogany&#10;Warranty: 5 Years&#10;Seating Capacity: 3 Seater"
+                rows={4}
+                style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '0.95rem', fontFamily: 'monospace', resize: 'vertical' }}
+              />
+            </div>
+
+            {/* Row 7: Variations */}
+            <div className="form-group">
+              <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.9rem' }}>
+                Variations (VariationName: Option1, Option2, Option3 - one per line)
+              </label>
+              <textarea
+                value={variationsText}
+                onChange={(e) => setVariationsText(e.target.value)}
+                placeholder="Color: Velvet Grey, Cream White, Ocean Blue&#10;Size: 3 Seater, 2 Seater, Sofa Set"
+                rows={4}
+                style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: '0.95rem', fontFamily: 'monospace', resize: 'vertical' }}
+              />
+            </div>
+
+            {/* Row 8: Checkboxes */}
             <div style={{ display: 'flex', gap: '30px', alignItems: 'center', margin: '10px 0' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: '500', fontSize: '0.95rem' }}>
                 <input
@@ -325,6 +491,7 @@ export default function ManageProductsForm({ initialProducts }) {
         </div>
       )}
 
+      {/* Product List Table */}
       <div className="admin-card" style={{ padding: 0, overflow: 'hidden', marginTop: '24px' }}>
         <table className="admin-table">
           <thead>
@@ -365,6 +532,15 @@ export default function ManageProductsForm({ initialProducts }) {
                 <td style={{ fontSize: '0.9rem', color: 'var(--text-dark)', fontWeight: '600' }}>
                   {product.price === null || product.price === undefined ? (
                     <span style={{ color: 'var(--text-muted)', fontStyle: 'italic', fontWeight: 'normal' }}>Contact Us</span>
+                  ) : product.salePrice && product.salePrice < product.price ? (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ textDecoration: 'line-through', color: 'var(--text-muted)', fontSize: '0.8rem', fontWeight: 'normal' }}>
+                        MWK {product.price.toLocaleString()}
+                      </span>
+                      <span style={{ color: '#dc3545' }}>
+                        MWK {product.salePrice.toLocaleString()}
+                      </span>
+                    </div>
                   ) : (
                     `MWK ${product.price.toLocaleString()}`
                   )}
@@ -373,7 +549,7 @@ export default function ManageProductsForm({ initialProducts }) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', fontWeight: '500', color: product.inStock ? '#047857' : '#9b1c1c' }}>
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: product.inStock ? '#10b981' : '#ef4444' }}></span>
-                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                      {product.inStock ? `In Stock (${product.stockCount ?? 10})` : 'Out of Stock'}
                     </span>
                     {product.featured && (
                       <span style={{ fontSize: '0.75rem', color: 'var(--brown)', fontWeight: '600' }}>★ Featured</span>

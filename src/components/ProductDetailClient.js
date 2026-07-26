@@ -10,7 +10,7 @@ export default function ProductDetailClient({ product, relatedProducts }) {
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
   const [selectedVariations, setSelectedVariations] = useState({});
-  const [addedMessage, setAddedMessage] = useState('');
+  const [addedToCart, setAddedToCart] = useState(false);
 
   // Handle dynamic product transitions (e.g. from related products)
   useEffect(() => {
@@ -48,8 +48,7 @@ export default function ProductDetailClient({ product, relatedProducts }) {
   const handleAddToCart = () => {
     if (!product.inStock) return;
     addToCart(product, quantity, selectedVariations);
-    setAddedMessage(`Added ${quantity}x ${product.name} to cart!`);
-    setTimeout(() => setAddedMessage(''), 3000);
+    setAddedToCart(true);
   };
 
   const handleWhatsAppOrder = () => {
@@ -200,38 +199,33 @@ export default function ProductDetailClient({ product, relatedProducts }) {
             </div>
           </div>
 
-          {/* Added to Cart confirmation message */}
-          {addedMessage && (
-            <div style={{
-              backgroundColor: 'rgba(37, 211, 102, 0.1)',
-              color: 'var(--whatsapp-dark)',
-              border: '1px solid var(--whatsapp)',
-              padding: '12px 16px',
-              borderRadius: 'var(--radius)',
-              fontSize: '0.95rem',
-              fontWeight: '600',
-              marginBottom: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              {addedMessage}
-            </div>
-          )}
+
 
           {/* Action Buttons */}
           <div className="product-detail-actions">
-            <button
-              className="btn btn-primary"
-              onClick={handleAddToCart}
-              disabled={!product.inStock}
-              style={{ flex: '1', minWidth: '180px', opacity: !product.inStock ? 0.5 : 1, cursor: !product.inStock ? 'not-allowed' : 'pointer' }}
-            >
-              Add to Cart
-            </button>
+            {addedToCart ? (
+              <a
+                href="/cart"
+                className="btn btn-primary"
+                style={{ flex: '1', minWidth: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                View Cart
+              </a>
+            ) : (
+              <button
+                className="btn btn-primary"
+                onClick={handleAddToCart}
+                disabled={!product.inStock}
+                style={{ flex: '1', minWidth: '180px', opacity: !product.inStock ? 0.5 : 1, cursor: !product.inStock ? 'not-allowed' : 'pointer' }}
+              >
+                Add to Cart
+              </button>
+            )}
             <button
               onClick={handleWhatsAppOrder}
               className="btn btn-whatsapp"

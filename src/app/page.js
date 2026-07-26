@@ -7,15 +7,6 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import ProductCard from '@/components/ProductCard';
 import { CartProvider } from '@/components/CartProvider';
 
-// Category icons mapping
-const categoryIcons = {
-  'Sofas': '🛋️',
-  'Sofa Sets': '🛋️',
-  'Dining': '🍽️',
-  'Tables': '🪵',
-  'Bedroom': '🛏️',
-};
-
 export default function HomePage() {
   const settings = getSettings();
   const featuredProducts = getFeaturedProducts();
@@ -112,7 +103,6 @@ export default function HomePage() {
                   <img src={categoryImages[cat]} alt={cat} />
                 </div>
                 <div className="category-card-info">
-                  <span className="category-icon">{categoryIcons[cat] || '🪑'}</span>
                   <h3>{cat}</h3>
                   <span className="category-count">{categoryCounts[cat]} {categoryCounts[cat] === 1 ? 'product' : 'products'}</span>
                 </div>

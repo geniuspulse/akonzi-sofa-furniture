@@ -69,12 +69,9 @@ img { max-width: 100%; display: block; }
 .btn-danger:hover { background: #c82333; }
 
 /* Navbar */
-.navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 0; transition: var(--transition); background: transparent; }
-.navbar.scrolled { background: rgba(253,251,247,0.97); box-shadow: var(--shadow); padding: 12px 0; backdrop-filter: blur(10px); }
-.navbar:not(.scrolled) .nav-link, .navbar:not(.scrolled) .logo-text-main { color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-.navbar:not(.scrolled) .logo-sub { color: rgba(255,255,255,0.7); text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-.navbar:not(.scrolled) .logo-mark { background: rgba(255,255,255,0.15); backdrop-filter: blur(5px); border: 2px solid rgba(255,255,255,0.3); color: var(--amber); }
-.navbar:not(.scrolled) .nav-toggle span { background: #fff; }
+.navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 14px 0; transition: var(--transition); background: rgba(253,251,247,0.98); box-shadow: 0 2px 20px rgba(44,24,16,0.08); backdrop-filter: blur(12px); }
+.navbar.scrolled { background: rgba(253,251,247,0.99); box-shadow: 0 2px 20px rgba(44,24,16,0.12); padding: 12px 0; }
+
 .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { display: flex; align-items: center; gap: 12px; }
 .logo-mark { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: var(--brown); color: var(--amber); font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; border-radius: 50%; }
