@@ -4,71 +4,281 @@
     "name": "3-Seater Sofa",
     "description": "Classic comfort seating with premium upholstery. Handcrafted for your living room with durable wood framing and high-density foam cushions.",
     "price": 16000,
+    "salePrice": 14000,
     "currency": "MWK",
     "image": "/images/sofa-3seater.png",
+    "images": ["/images/sofa-3seater.png", "/images/hero-showroom.png"],
     "category": "Sofas",
-    "badge": "Popular",
+    "badge": "On Sale",
     "inStock": true,
-    "featured": true
+    "stockCount": 5,
+    "featured": true,
+    "specifications": {
+      "Dimensions": "210cm × 90cm × 85cm",
+      "Frame": "Solid hardwood (Mlombwa)",
+      "Cushions": "High-density foam, 10cm thickness",
+      "Upholstery": "Premium polyester blend",
+      "Color": "Charcoal Grey",
+      "Weight": "45kg",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Fabric Color",
+        "options": ["Charcoal Grey", "Beige", "Navy Blue", "Burgundy"]
+      },
+      {
+        "name": "Size",
+        "options": ["2-Seater", "3-Seater", "4-Seater"]
+      }
+    ]
   },
   {
     "id": "3-plus-2-sofa-set",
-    "name": "3+2+ Seater Sofa Set",
+    "name": "3+2 Seater Sofa Set",
     "description": "Complete living room set with a 3-seater and 2-seater. Perfect for family spaces. Matching design and premium fabric.",
     "price": 26000,
+    "salePrice": null,
     "currency": "MWK",
     "image": "/images/hero-showroom.png",
+    "images": ["/images/hero-showroom.png", "/images/sofa-3seater.png"],
     "category": "Sofa Sets",
     "badge": "Best Value",
     "inStock": true,
-    "featured": true
+    "stockCount": 3,
+    "featured": true,
+    "specifications": {
+      "Dimensions": "3-Seater: 210cm × 90cm × 85cm | 2-Seater: 150cm × 90cm × 85cm",
+      "Frame": "Solid hardwood (Mlombwa)",
+      "Cushions": "High-density foam, 10cm thickness",
+      "Upholstery": "Premium polyester blend",
+      "Color": "Charcoal Grey",
+      "Weight": "75kg (set)",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Fabric Color",
+        "options": ["Charcoal Grey", "Beige", "Navy Blue", "Burgundy", "Forest Green"]
+      }
+    ]
   },
   {
     "id": "3-plus-1-plus-1-sofa-set",
     "name": "3+1+1 Seater Sofa Set",
     "description": "Versatile set with a 3-seater plus two single seats. Flexible seating arrangement for any room layout.",
     "price": 26000,
+    "salePrice": 23000,
     "currency": "MWK",
     "image": "/images/sofa-3seater.png",
+    "images": ["/images/sofa-3seater.png", "/images/hero-showroom.png"],
     "category": "Sofa Sets",
-    "badge": null,
+    "badge": "On Sale",
     "inStock": true,
-    "featured": false
+    "stockCount": 2,
+    "featured": false,
+    "specifications": {
+      "Dimensions": "3-Seater: 210cm × 90cm × 85cm | Single: 80cm × 90cm × 85cm",
+      "Frame": "Solid hardwood (Mlombwa)",
+      "Cushions": "High-density foam, 10cm thickness",
+      "Upholstery": "Premium polyester blend",
+      "Color": "Charcoal Grey",
+      "Weight": "85kg (set)",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Fabric Color",
+        "options": ["Charcoal Grey", "Beige", "Navy Blue", "Burgundy"]
+      }
+    ]
   },
   {
     "id": "dining-set",
     "name": "Dining Set",
     "description": "Solid wood dining table with four chairs. Warm mahogany finish. Seats 4-6 comfortably. Built to last generations.",
-    "price": null,
+    "price": 32000,
+    "salePrice": null,
     "currency": "MWK",
     "image": "/images/dining-set.png",
+    "images": ["/images/dining-set.png"],
     "category": "Dining",
     "badge": "New",
     "inStock": true,
-    "featured": true
+    "stockCount": 4,
+    "featured": true,
+    "specifications": {
+      "Dimensions": "Table: 150cm × 90cm × 75cm | Chair: 45cm × 50cm × 95cm",
+      "Material": "Solid mahogany wood",
+      "Finish": "Warm mahogany stain, lacquered",
+      "Seating Capacity": "4-6 people",
+      "Weight": "65kg (set)",
+      "Warranty": "18 months"
+    },
+    "variations": [
+      {
+        "name": "Seating",
+        "options": ["4 Chairs", "6 Chairs", "8 Chairs"]
+      },
+      {
+        "name": "Finish",
+        "options": ["Mahogany", "Natural Oak", "Dark Walnut"]
+      }
+    ]
   },
   {
     "id": "coffee-table",
     "name": "Coffee Table",
     "description": "Handcrafted wooden coffee table with warm amber finish. The perfect centerpiece for your living room.",
-    "price": null,
+    "price": 8000,
+    "salePrice": null,
     "currency": "MWK",
     "image": "/images/coffee-table.png",
+    "images": ["/images/coffee-table.png"],
     "category": "Tables",
     "badge": null,
     "inStock": true,
-    "featured": false
+    "stockCount": 8,
+    "featured": false,
+    "specifications": {
+      "Dimensions": "120cm × 60cm × 45cm",
+      "Material": "Solid hardwood",
+      "Finish": "Warm amber stain, lacquered",
+      "Storage": "Lower shelf included",
+      "Weight": "15kg",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Finish",
+        "options": ["Warm Amber", "Natural Oak", "Dark Walnut"]
+      }
+    ]
   },
   {
     "id": "bed-frame",
     "name": "Upholstered Bed Frame",
     "description": "Elegant bed frame with tufted headboard. Customizable fabric and color options. Premium comfort and style.",
-    "price": null,
+    "price": 28000,
+    "salePrice": 25000,
     "currency": "MWK",
     "image": "/images/bed-frame.png",
+    "images": ["/images/bed-frame.png"],
     "category": "Bedroom",
+    "badge": "On Sale",
+    "inStock": true,
+    "stockCount": 3,
+    "featured": true,
+    "specifications": {
+      "Dimensions": "Queen: 160cm × 200cm | King: 180cm × 200cm",
+      "Frame": "Solid hardwood (Mlombwa)",
+      "Headboard": "Tufted, high-density foam padding",
+      "Upholstery": "Premium fabric, customizable",
+      "Weight": "55kg",
+      "Warranty": "18 months"
+    },
+    "variations": [
+      {
+        "name": "Size",
+        "options": ["Single", "Double", "Queen", "King"]
+      },
+      {
+        "name": "Headboard Fabric",
+        "options": ["Grey Velvet", "Beige Linen", "Navy Blue", "Burgundy Velvet"]
+      }
+    ]
+  },
+  {
+    "id": "l-shaped-sectional",
+    "name": "L-Shaped Sectional Sofa",
+    "description": "Spacious L-shaped sectional sofa perfect for large living rooms. Modular design allows flexible arrangement. Seats 5-6 comfortably.",
+    "price": 38000,
+    "salePrice": null,
+    "currency": "MWK",
+    "image": "/images/hero-showroom.png",
+    "images": ["/images/hero-showroom.png", "/images/sofa-3seater.png"],
+    "category": "Sofas",
     "badge": "Premium",
     "inStock": true,
-    "featured": true
+    "stockCount": 2,
+    "featured": true,
+    "specifications": {
+      "Dimensions": "300cm × 200cm × 85cm",
+      "Frame": "Solid hardwood (Mlombwa)",
+      "Cushions": "High-density foam, 12cm thickness",
+      "Upholstery": "Premium polyester blend",
+      "Configuration": "Left or Right facing",
+      "Weight": "95kg",
+      "Warranty": "18 months"
+    },
+    "variations": [
+      {
+        "name": "Fabric Color",
+        "options": ["Charcoal Grey", "Beige", "Navy Blue", "Burgundy", "Forest Green"]
+      },
+      {
+        "name": "Configuration",
+        "options": ["Left Facing", "Right Facing"]
+      }
+    ]
+  },
+  {
+    "id": "armchair-single",
+    "name": "Accent Armchair",
+    "description": "Single accent armchair with solid wood frame and premium cushioning. Perfect for reading nooks or as extra seating.",
+    "price": 9000,
+    "salePrice": null,
+    "currency": "MWK",
+    "image": "/images/sofa-3seater.png",
+    "images": ["/images/sofa-3seater.png"],
+    "category": "Sofas",
+    "badge": null,
+    "inStock": true,
+    "stockCount": 10,
+    "featured": false,
+    "specifications": {
+      "Dimensions": "80cm × 90cm × 85cm",
+      "Frame": "Solid hardwood",
+      "Cushions": "High-density foam, 10cm",
+      "Upholstery": "Premium polyester blend",
+      "Weight": "18kg",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Fabric Color",
+        "options": ["Charcoal Grey", "Beige", "Navy Blue", "Burgundy", "Mustard Yellow"]
+      }
+    ]
+  },
+  {
+    "id": "tv-stand",
+    "name": "TV Stand / Media Console",
+    "description": "Handcrafted wooden TV stand with storage compartments. Fits TVs up to 65 inches. Cable management built in.",
+    "price": 12000,
+    "salePrice": null,
+    "currency": "MWK",
+    "image": "/images/coffee-table.png",
+    "images": ["/images/coffee-table.png"],
+    "category": "Tables",
+    "badge": "New",
+    "inStock": true,
+    "stockCount": 6,
+    "featured": false,
+    "specifications": {
+      "Dimensions": "160cm × 45cm × 55cm",
+      "Material": "Solid hardwood with MDF panels",
+      "Finish": "Warm amber stain, lacquered",
+      "Storage": "2 cabinets + open shelf",
+      "TV Capacity": "Up to 65 inches",
+      "Weight": "25kg",
+      "Warranty": "12 months"
+    },
+    "variations": [
+      {
+        "name": "Finish",
+        "options": ["Warm Amber", "Natural Oak", "Dark Walnut", "Black"]
+      }
+    ]
   }
 ]

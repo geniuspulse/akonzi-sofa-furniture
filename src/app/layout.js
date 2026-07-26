@@ -1,5 +1,6 @@
 import './globals.css';
 import { siteConfig } from '@/lib/data';
+import { CartProvider } from '@/components/CartProvider';
 
 export const metadata = {
   title: 'Akonzi Sofa Furniture | Quality, Affordable & Durable Furniture in Lilongwe, Malawi',
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236B4226'/><text y='.9em' x='50%' text-anchor='middle' font-size='65' fill='%23D4A574' font-family='serif' font-weight='bold'>A</text></svg>" />
       </head>
       <body>
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

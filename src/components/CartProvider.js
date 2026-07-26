@@ -1,11 +1,21 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
 const CartContext = createContext();
 
+// Generate a unique cart item key from product id + selected variations
+function getCartKey(id, variations = {}) {
+  const varStr = Object.entries(variations)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([k, v]) => `${k}:${v}`)
+    .join('|');
+  return varStr ? `${id}__${varStr}` : id;
+}
+
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem('akonzi_cart');
@@ -16,28 +26,63 @@ export function CartProvider({ children }) {
         console.error('Error parsing cart from localStorage:', e);
       }
     }
+    setIsLoaded(true);
   }, []);
 
-  const addToCart = (product, quantity = 1) => {
+  const saveCart = (updated) => {
+    localStorage.setItem('akonzi_cart', JSON.stringify(updated));
+  };
+
+  const addToCart = (product, quantity = 1, selectedVariations = {}) => {
+    const key = getCartKey(product.id, selectedVariations);
+    const effectivePrice = (product.salePrice && product.salePrice < product.price)
+      ? product.salePrice
+      : product.price;
+
     setCart(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const existing = prev.find(item => item.key === key);
       let updated;
       if (existing) {
         updated = prev.map(item =>
-          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+          item.key === key
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
         );
       } else {
-        updated = [...prev, { ...product, quantity }];
+        updated = [...prev, {
+          key,
+          id: product.id,
+          name: product.name,
+          price: effectivePrice,
+          image: product.image || (product.images && product.images[0]) || '',
+          category: product.category || '',
+          quantity,
+          selectedVariations,
+        }];
       }
-      localStorage.setItem('akonzi_cart', JSON.stringify(updated));
+      saveCart(updated);
       return updated;
     });
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (key) => {
     setCart(prev => {
-      const updated = prev.filter(item => item.id !== id);
-      localStorage.setItem('akonzi_cart', JSON.stringify(updated));
+      const updated = prev.filter(item => item.key !== key);
+      saveCart(updated);
+      return updated;
+    });
+  };
+
+  const updateQuantity = (key, quantity) => {
+    if (quantity < 1) {
+      removeFromCart(key);
+      return;
+    }
+    setCart(prev => {
+      const updated = prev.map(item =>
+        item.key === key ? { ...item, quantity } : item
+      );
+      saveCart(updated);
       return updated;
     });
   };
@@ -47,12 +92,33 @@ export function CartProvider({ children }) {
     localStorage.removeItem('akonzi_cart');
   };
 
-  const getCartCount = () => {
+  const cartTotal = useMemo(() => {
+    return cart.reduce((total, item) => {
+      const price = item.price || 0;
+      return total + price * item.quantity;
+    }, 0);
+  }, [cart]);
+
+  const cartCount = useMemo(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  }, [cart]);
+
+  const hasPriceItems = useMemo(() => {
+    return cart.some(item => item.price && item.price > 0);
+  }, [cart]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, getCartCount }}>
+    <CartContext.Provider value={{
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      cartTotal,
+      cartCount,
+      hasPriceItems,
+      isLoaded,
+    }}>
       {children}
     </CartContext.Provider>
   );
@@ -61,9 +127,17 @@ export function CartProvider({ children }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    // Return a dummy object if context is missing (like in non-wrapped layouts) 
-    // to prevent complete crashes during development or ssr.
-    return { cart: [], addToCart: () => {}, removeFromCart: () => {}, clearCart: () => {}, getCartCount: () => 0 };
+    return {
+      cart: [],
+      addToCart: () => {},
+      removeFromCart: () => {},
+      updateQuantity: () => {},
+      clearCart: () => {},
+      cartTotal: 0,
+      cartCount: 0,
+      hasPriceItems: false,
+      isLoaded: false,
+    };
   }
   return context;
 }

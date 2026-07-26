@@ -5,6 +5,7 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '▦' },
   { href: '/admin/posts', label: 'Blog Posts', icon: '✍' },
   { href: '/admin/products', label: 'Products', icon: '🛋' },
+  { href: '/admin/orders', label: 'Orders', icon: '📋' },
   { href: '/admin/settings', label: 'Site Settings', icon: '⚙' },
 ];
 

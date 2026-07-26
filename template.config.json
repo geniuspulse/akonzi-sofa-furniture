@@ -1,0 +1,42 @@
+{
+  "business": {
+    "name": "Akonzi Furniture & General Dealers",
+    "tagline": "Quality Starts Here!!!",
+    "description": "We make and supply quality, affordable & durable furniture of your choice. Free delivery within Lilongwe.",
+    "location": "Lilongwe, Malawi",
+    "whatsapp": "265000000000",
+    "phone": "+265 000 000 000",
+    "email": "info@example.com",
+    "address": "Lilongwe, Malawi",
+    "hours": "Mon-Sat: 8:00 AM - 5:00 PM",
+    "facebook": "https://www.facebook.com/",
+    "instagram": "https://www.instagram.com/"
+  },
+  "theme": {
+    "brownDark": "#4A2C17",
+    "brown": "#6B4226",
+    "brownLight": "#8B5A2B",
+    "amber": "#D4A574",
+    "amberLight": "#E8C9A0",
+    "cream": "#F5E6D3",
+    "creamLight": "#FAF7F2",
+    "warmWhite": "#FDFBF7",
+    "textDark": "#2C1810",
+    "textBody": "#5A3E2B",
+    "textMuted": "#8A7560",
+    "whatsapp": "#25D366",
+    "whatsappDark": "#1FA855",
+    "border": "#E8DCC8",
+    "fontHeading": "Playfair Display",
+    "fontBody": "DM Sans"
+  },
+  "agency": {
+    "name": "Brandfletch Media",
+    "website": "https://brandfletch.com"
+  },
+  "github": {
+    "owner": "geniuspulse",
+    "repo": "akonzi-sofa-furniture",
+    "branch": "main"
+  }
+}

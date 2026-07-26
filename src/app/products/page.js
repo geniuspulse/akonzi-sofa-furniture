@@ -1,32 +1,68 @@
-import { getSettings } from '@/lib/settings';
-import Link from 'next/link';
-import { getProducts, getCategories, siteConfig } from '@/lib/data';
+import {
+  getSettings,
+  getProducts,
+  getCategories,
+  searchProducts,
+  formatPrice,
+  getSaleProducts,
+} from '@/lib/data';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import ProductCard from '@/components/ProductCard';
 import { CartProvider } from '@/components/CartProvider';
+import ProductCard from '@/components/ProductCard';
+import Link from 'next/link';
 
 export default async function ProductsPage({ searchParams }) {
   const settings = getSettings();
-  const resolvedSearchParams = await searchParams;
-  const currentCategory = resolvedSearchParams?.category || '';
+  const resolvedParams = (await searchParams) || {};
+  const currentCategory = resolvedParams.category || '';
+  const currentSearch = resolvedParams.search || '';
+  const currentSort = resolvedParams.sort || 'featured';
 
-  const allProducts = getProducts();
+  // Get data using the specified filter function
+  const filteredProducts = searchProducts(currentSearch, currentCategory, currentSort);
   const categories = getCategories();
+  const saleProducts = getSaleProducts();
+  const saleCount = saleProducts.length;
 
-  const filteredProducts = currentCategory
-    ? allProducts.filter(p => p.category.toLowerCase() === currentCategory.toLowerCase())
-    : allProducts;
+  // Helper to build URL query strings safely
+  const getFilterUrl = (cat, search, sort) => {
+    const params = new URLSearchParams();
+    if (cat) params.set('category', cat);
+    if (search) params.set('search', search);
+    if (sort) params.set('sort', sort);
+    const qs = params.toString();
+    return qs ? `/products?${qs}` : '/products';
+  };
 
   return (
     <CartProvider>
-      <Navbar />
+      <Navbar settings={settings} />
 
       {/* Page Header */}
       <section className="section section-cream" style={{ paddingTop: '140px', paddingBottom: '40px' }}>
         <div className="container">
           <div className="section-header" style={{ marginBottom: '20px' }}>
+            {saleCount > 0 && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'var(--amber)',
+                  color: 'var(--brown-dark)',
+                  padding: '8px 20px',
+                  borderRadius: '50px',
+                  fontSize: '0.85rem',
+                  fontWeight: '700',
+                  marginBottom: '20px',
+                  boxShadow: 'var(--shadow)',
+                }}
+              >
+                <span>🔥 {saleCount} Special Offers Active!</span>
+              </div>
+            )}
             <span className="section-eyebrow">Our Collection</span>
             <h1 className="section-title">Handcrafted Furniture Range</h1>
             <p className="section-subtitle">
@@ -34,10 +70,87 @@ export default async function ProductsPage({ searchParams }) {
             </p>
           </div>
 
+          {/* Search and Sort Form */}
+          <form
+            method="GET"
+            action="/products"
+            style={{
+              display: 'flex',
+              gap: '12px',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              marginBottom: '32px',
+              maxWidth: '800px',
+              margin: '30px auto',
+            }}
+          >
+            {currentCategory && <input type="hidden" name="category" value={currentCategory} />}
+            
+            <div style={{ flex: '1', minWidth: '260px', position: 'relative' }}>
+              <input
+                type="text"
+                name="search"
+                placeholder="Search products..."
+                defaultValue={currentSearch}
+                style={{
+                  padding: '14px 24px',
+                  borderRadius: '50px',
+                  border: '2px solid var(--border)',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '0.95rem',
+                  width: '100%',
+                  outline: 'none',
+                  backgroundColor: 'var(--warm-white)',
+                  color: 'var(--text-dark)',
+                }}
+              />
+            </div>
+
+            <select
+              name="sort"
+              defaultValue={currentSort}
+              style={{
+                padding: '14px 24px',
+                borderRadius: '50px',
+                border: '2px solid var(--border)',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.95rem',
+                backgroundColor: 'var(--warm-white)',
+                color: 'var(--text-body)',
+                outline: 'none',
+                cursor: 'pointer',
+                minWidth: '180px',
+              }}
+            >
+              <option value="featured">Featured</option>
+              <option value="price-low">Price Low-High</option>
+              <option value="price-high">Price High-Low</option>
+              <option value="name">Name A-Z</option>
+              <option value="newest">Newest</option>
+            </select>
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-sm"
+              style={{ padding: '14px 32px', fontSize: '0.95rem' }}
+            >
+              Apply
+            </button>
+          </form>
+
           {/* Category Filters */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', margin: '20px auto 40px', maxWidth: '800px' }}>
-            <Link 
-              href="/products" 
+          <div
+            style={{
+              display: 'flex',
+              gap: '12px',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              margin: '20px auto 10px',
+              maxWidth: '900px',
+            }}
+          >
+            <Link
+              href={getFilterUrl('', currentSearch, currentSort)}
               className={`btn btn-sm ${!currentCategory ? 'btn-primary' : 'btn-outline'}`}
             >
               All Collection
@@ -45,10 +158,18 @@ export default async function ProductsPage({ searchParams }) {
             {categories.map((cat) => (
               <Link
                 key={cat}
-                href={`/products?category=${encodeURIComponent(cat)}`}
-                className={`btn btn-sm ${currentCategory.toLowerCase() === cat.toLowerCase() ? 'btn-primary' : 'btn-outline'}`}
+                href={getFilterUrl(cat, currentSearch, currentSort)}
+                className={`btn btn-sm ${
+                  currentCategory.toLowerCase() === cat.toLowerCase()
+                    ? 'btn-primary'
+                    : 'btn-outline'
+                }`}
               >
-                {cat === 'Tables' ? 'Coffee Tables' : cat === 'Bedroom' ? 'Beds & Bedroom' : cat}
+                {cat === 'Tables'
+                  ? 'Coffee Tables'
+                  : cat === 'Bedroom'
+                  ? 'Beds & Bedroom'
+                  : cat}
               </Link>
             ))}
           </div>
@@ -56,15 +177,22 @@ export default async function ProductsPage({ searchParams }) {
       </section>
 
       {/* Products Grid Section */}
-      <section className="section section-warm" style={{ paddingTop: '40px', minHeight: '400px' }}>
+      <section className="section section-warm" style={{ paddingTop: '50px', minHeight: '500px' }}>
         <div className="container">
           {filteredProducts.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '60px 0' }}>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', color: 'var(--text-dark)', marginBottom: '12px' }}>
+            <div style={{ textAlign: 'center', padding: '80px 0' }}>
+              <h3
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '2rem',
+                  color: 'var(--text-dark)',
+                  marginBottom: '16px',
+                }}
+              >
                 No Products Found
               </h3>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>
-                We couldn't find any products in the "{currentCategory}" category.
+              <p style={{ color: 'var(--text-muted)', marginBottom: '32px', fontSize: '1.1rem' }}>
+                We couldn't find any products matching your search criteria.
               </p>
               <Link href="/products" className="btn btn-primary">
                 View All Products

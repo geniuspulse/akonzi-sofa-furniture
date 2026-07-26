@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getFeaturedProducts, siteConfig, whatsappLink } from '@/lib/data';
+import { getFeaturedProducts, getSaleProducts, getCategories, getProducts, siteConfig, whatsappLink, formatPrice, getEffectivePrice } from '@/lib/data';
 import { getSettings } from '@/lib/settings';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -7,23 +7,49 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import ProductCard from '@/components/ProductCard';
 import { CartProvider } from '@/components/CartProvider';
 
+// Category icons mapping
+const categoryIcons = {
+  'Sofas': '🛋️',
+  'Sofa Sets': '🛋️',
+  'Dining': '🍽️',
+  'Tables': '🪵',
+  'Bedroom': '🛏️',
+};
+
 export default function HomePage() {
   const settings = getSettings();
   const featuredProducts = getFeaturedProducts();
+  const saleProducts = getSaleProducts();
+  const categories = getCategories();
+  const allProducts = getProducts();
+
+  // Count products per category
+  const categoryCounts = {};
+  allProducts.forEach(p => {
+    categoryCounts[p.category] = (categoryCounts[p.category] || 0) + 1;
+  });
+
+  // Get representative product image for each category
+  const categoryImages = {};
+  categories.forEach(cat => {
+    const product = allProducts.find(p => p.category === cat);
+    if (product) categoryImages[cat] = product.image || (product.images && product.images[0]);
+  });
+
   const heroWhatsappMessage = "Hello Akonzi Sofa Furniture, I would like to make an inquiry or order some furniture.";
-  const heroWhatsappUrl = whatsappLink(heroWhatsappMessage);
+  const heroWhatsappUrl = whatsappLink(heroWhatsappMessage, settings.whatsapp);
 
   return (
     <CartProvider>
-      <Navbar />
+      <Navbar settings={settings} />
       
       {/* Hero Section */}
       <header className="hero">
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <span className="hero-eyebrow">Handcrafted in Lilongwe</span>
-          <h1 className="hero-title">{siteConfig.name}</h1>
-          <p className="hero-tagline">{siteConfig.tagline}</p>
+          <h1 className="hero-title">{settings.name}</h1>
+          <p className="hero-tagline">{settings.tagline}</p>
           <div className="hero-cta">
             <Link href="/products" className="btn btn-primary btn-large">
               Browse Collection
@@ -68,6 +94,53 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Categories Showcase */}
+      <section className="section section-cream" style={{ paddingTop: '100px' }}>
+        <div className="container">
+          <div className="section-header">
+            <span className="section-eyebrow">Shop by Category</span>
+            <h2 className="section-title">Explore Our Range</h2>
+            <p className="section-subtitle">
+              From cozy sofas to elegant dining sets — find the perfect piece for every room.
+            </p>
+          </div>
+          <div className="category-grid">
+            {categories.map(cat => (
+              <Link href={`/products?category=${encodeURIComponent(cat)}`} key={cat} className="category-card">
+                <div className="category-card-image">
+                  <img src={categoryImages[cat]} alt={cat} />
+                </div>
+                <div className="category-card-info">
+                  <span className="category-icon">{categoryIcons[cat] || '🪑'}</span>
+                  <h3>{cat}</h3>
+                  <span className="category-count">{categoryCounts[cat]} {categoryCounts[cat] === 1 ? 'product' : 'products'}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* On Sale Section */}
+      {saleProducts.length > 0 && (
+        <section className="section section-warm" style={{ background: 'linear-gradient(135deg, #fef3e2 0%, #faf7f2 100%)' }}>
+          <div className="container">
+            <div className="section-header">
+              <span className="section-eyebrow" style={{ color: '#dc2626' }}>Limited Time Offers</span>
+              <h2 className="section-title">On Sale Now</h2>
+              <p className="section-subtitle">
+                Save big on selected furniture pieces. Limited stock available!
+              </p>
+            </div>
+            <div className="products-grid">
+              {saleProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* About Preview */}
       <section className="section section-cream">
@@ -153,14 +226,14 @@ export default function HomePage() {
               <span className="process-arrow" style={{ display: 'none' }} aria-hidden="true">&rarr;</span>
               <div className="process-step">
                 <div className="step-number">2</div>
-                <h4>Place Order</h4>
-                <p>Add to cart and checkout, or text us directly on WhatsApp with your choice.</p>
+                <h4>Add to Cart & Checkout</h4>
+                <p>Add items to your cart, complete the checkout form with your delivery details.</p>
               </div>
               <span className="process-arrow" style={{ display: 'none' }} aria-hidden="true">&rarr;</span>
               <div className="process-step">
                 <div className="step-number">3</div>
-                <h4>Free Delivery</h4>
-                <p>We build, deliver, and set up your new furniture for free in Lilongwe!</p>
+                <h4>WhatsApp Confirmation</h4>
+                <p>Your order is sent via WhatsApp for confirmation. We build, deliver, and set up — free in Lilongwe!</p>
               </div>
             </div>
           </div>
