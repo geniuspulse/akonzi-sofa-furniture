@@ -9,8 +9,8 @@ const settingsPath = path.join(process.cwd(), 'data', 'settings.json');
 
 const defaultSettings = {
   // Contact
-  whatsapp: '265000000000',
-  phone: '+265 000 000 000',
+  whatsapp: '265985151742',
+  phone: '+265 985 15 17 42',
   email: 'info@akonzifurniture.com',
   address: 'Lilongwe, Malawi',
   hours: 'Mon-Sat: 8:00 AM - 5:00 PM',
