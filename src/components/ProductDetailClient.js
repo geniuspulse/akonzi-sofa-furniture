@@ -51,18 +51,79 @@ export default function ProductDetailClient({ product, relatedProducts, settings
     setAddedToCart(true);
   };
 
-  const handleWhatsAppOrder = () => {
-    let message = `Hello Akonzi Sofa Furniture, I would like to order:\n`;
-    message += `*Product:* ${product.name}\n`;
-    message += `*Quantity:* ${quantity}\n`;
-    if (Object.keys(selectedVariations).length > 0) {
-      message += `*Options:*\n`;
-      Object.entries(selectedVariations).forEach(([key, value]) => {
-        message += ` - ${key}: ${value}\n`;
+  const [whatsappLoading, setWhatsappLoading] = useState(false);
+
+  const handleWhatsAppOrder = async () => {
+    setWhatsappLoading(true);
+    try {
+      // Create order via API (same flow as cart checkout)
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: quantity,
+            selectedVariations: selectedVariations || {},
+          }],
+          customer: {
+            name: 'WhatsApp Direct Order',
+            phone: 'Pending via WhatsApp',
+          },
+          delivery: { zone: 'Lilongwe' },
+        }),
       });
+
+      const data = await response.json();
+
+      if (response.ok && data.whatsappUrl) {
+        // Order created — open WhatsApp with rich pre-filled message
+        window.open(data.whatsappUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        // Fallback: build message manually and open WhatsApp
+        const siteUrl = window.location.origin;
+        let msg = '*NEW ORDER - ' + (data.order?.id || 'Direct') + '*\n';
+        msg += '----------------------------------\n\n';
+        msg += '*ORDER SUMMARY*\n\n';
+        msg += '1. *' + product.name + '*\n';
+        Object.entries(selectedVariations || {}).forEach(([k, v]) => {
+          msg += '   - ' + k + ': ' + v + '\n';
+        });
+        const unitPrice = product.price ? 'MWK ' + Number(product.price).toLocaleString() : 'Price on request';
+        const lineTotal = product.price ? 'MWK ' + (product.price * quantity).toLocaleString() : 'TBD';
+        msg += '   Qty: ' + quantity + ' x ' + unitPrice + ' = ' + lineTotal + '\n';
+        msg += '   Link: ' + siteUrl + '/products/' + product.id + '\n';
+        msg += '\n----------------------------------\n';
+        if (product.price) {
+          msg += '*TOTAL: MWK ' + (product.price * quantity).toLocaleString() + '*\n';
+          msg += 'Delivery: FREE (Lilongwe)\n';
+        } else {
+          msg += '*TOTAL: Price on request*\n';
+        }
+        msg += '----------------------------------\n\n';
+        msg += '*CUSTOMER*\n';
+        msg += 'Name: (Please provide your name)\n';
+        msg += 'Phone: (Please provide your phone)\n\n';
+        msg += '*DELIVERY*\n';
+        msg += 'Zone: Lilongwe\n';
+        msg += '\n----------------------------------\n';
+        msg += 'I would like to order this product. Please confirm availability and delivery.';
+        const url = whatsappLink(msg, settings?.whatsapp);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      console.error('WhatsApp order error:', err);
+      // Final fallback: simple message
+      const siteUrl = window.location.origin;
+      let msg = 'Hello, I would like to order: ' + product.name + ' (Qty: ' + quantity + ')\n';
+      msg += 'Link: ' + siteUrl + '/products/' + product.id;
+      const url = whatsappLink(msg, settings?.whatsapp);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } finally {
+      setWhatsappLoading(false);
     }
-    const url = whatsappLink(message, settings?.whatsapp);
-    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -229,9 +290,10 @@ export default function ProductDetailClient({ product, relatedProducts, settings
             <button
               onClick={handleWhatsAppOrder}
               className="btn btn-whatsapp"
-              style={{ flex: '1', minWidth: '180px' }}
+              style={{ flex: '1', minWidth: '180px', opacity: whatsappLoading ? 0.7 : 1, cursor: whatsappLoading ? 'wait' : 'pointer' }}
+              disabled={whatsappLoading}
             >
-              Order via WhatsApp
+              {whatsappLoading ? 'Preparing order...' : 'Order via WhatsApp'}
             </button>
           </div>
         </div>
