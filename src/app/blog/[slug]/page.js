@@ -1,3 +1,4 @@
+import { getSettings } from '@/lib/settings';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPostBySlug, getAllPosts, whatsappLink } from '@/lib/data';
@@ -14,6 +15,7 @@ export async function generateStaticParams() {
 }
 
 export default function BlogPostPage({ params }) {
+  const settings = getSettings();
   const { slug } = params;
   const post = getPostBySlug(slug);
 
@@ -130,8 +132,8 @@ export default function BlogPostPage({ params }) {
         </article>
       </main>
 
-      <Footer />
-      <WhatsAppFloat />
+      <Footer settings={settings} />
+      <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
     </CartProvider>
   );
 }

@@ -186,8 +186,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Footer />
-      <WhatsAppFloat />
+      <Footer settings={settings} />
+      <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
     </CartProvider>
   );
 }

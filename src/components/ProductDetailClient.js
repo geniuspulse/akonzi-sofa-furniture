@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCart } from '@/components/CartProvider';
-import { whatsappLink } from '@/lib/data';
+import { whatsappLink } from '@/lib/config';
 
 export default function ProductDetailClient({ product }) {
   const [quantity, setQuantity] = useState(1);

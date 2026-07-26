@@ -1,3 +1,4 @@
+import { getSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/data';
 import { CartProvider } from '@/components/CartProvider';
@@ -6,6 +7,7 @@ import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
 export default function BlogListingPage() {
+  const settings = getSettings();
   const posts = getAllPosts();
 
   const formatDate = (dateString) => {
@@ -71,8 +73,8 @@ export default function BlogListingPage() {
         </section>
       </main>
 
-      <Footer />
-      <WhatsAppFloat />
+      <Footer settings={settings} />
+      <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
     </CartProvider>
   );
 }

@@ -1,3 +1,4 @@
+import { getSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { siteConfig, whatsappLink } from '@/lib/data';
 import Navbar from '@/components/Navbar';
@@ -6,6 +7,7 @@ import WhatsAppFloat from '@/components/WhatsAppFloat';
 import { CartProvider } from '@/components/CartProvider';
 
 export default function AboutPage() {
+  const settings = getSettings();
   const aboutWhatsappMessage = "Hello Akonzi Sofa Furniture, I would like to discuss a custom furniture design.";
   const aboutWhatsappUrl = whatsappLink(aboutWhatsappMessage);
 
@@ -163,8 +165,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <Footer />
-      <WhatsAppFloat />
+      <Footer settings={settings} />
+      <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
     </CartProvider>
   );
 }

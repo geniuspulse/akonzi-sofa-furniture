@@ -1,3 +1,4 @@
+import { getSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { getProducts, getCategories, siteConfig } from '@/lib/data';
 import Navbar from '@/components/Navbar';
@@ -7,6 +8,7 @@ import ProductCard from '@/components/ProductCard';
 import { CartProvider } from '@/components/CartProvider';
 
 export default async function ProductsPage({ searchParams }) {
+  const settings = getSettings();
   const resolvedSearchParams = await searchParams;
   const currentCategory = resolvedSearchParams?.category || '';
 
@@ -78,8 +80,8 @@ export default async function ProductsPage({ searchParams }) {
         </div>
       </section>
 
-      <Footer />
-      <WhatsAppFloat />
+      <Footer settings={settings} />
+      <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
     </CartProvider>
   );
 }
