@@ -9,7 +9,7 @@ import { CartProvider } from '@/components/CartProvider';
 export default function AboutPage() {
   const settings = getSettings();
   const aboutWhatsappMessage = "Hello Akonzi Sofa Furniture, I would like to discuss a custom furniture design.";
-  const aboutWhatsappUrl = whatsappLink(aboutWhatsappMessage);
+  const aboutWhatsappUrl = whatsappLink(aboutWhatsappMessage, settings.whatsapp);
 
   return (
     <CartProvider>

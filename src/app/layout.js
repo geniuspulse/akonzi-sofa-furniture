@@ -3,6 +3,7 @@ import { siteConfig } from '@/lib/data';
 import { CartProvider } from '@/components/CartProvider';
 
 export const metadata = {
+  metadataBase: new URL('https://akonzi-sofa-furniture.vercel.app'),
   title: 'Akonzi Sofa Furniture | Quality, Affordable & Durable Furniture in Lilongwe, Malawi',
   description: 'Akonzi Sofa Furniture — We make and supply quality, affordable & durable furniture of your choice. Sofa sets, dining sets, coffee tables & beds. Free delivery within Lilongwe, Malawi.',
   keywords: 'furniture, sofa, Lilongwe, Malawi, dining set, coffee table, bed frame, Akonzi, affordable furniture',

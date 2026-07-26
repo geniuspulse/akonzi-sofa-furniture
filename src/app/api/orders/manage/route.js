@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken, COOKIE_NAME } from '@/lib/auth';
-import { updateOrderStatus, getOrdersLocal } from '@/lib/orders';
+import { updateOrderStatus, getOrders } from '@/lib/orders';
 
 async function checkAuth() {
   const cookieStore = cookies();
@@ -11,13 +11,13 @@ async function checkAuth() {
   return !!payload;
 }
 
-// GET: List all orders (admin only)
+// GET: List all orders (admin only) — fetches from GitHub for accuracy
 export async function GET(request) {
   if (!(await checkAuth())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   try {
-    const orders = getOrdersLocal();
+    const orders = await getOrders();
     // Sort by date descending
     orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return NextResponse.json({ orders });

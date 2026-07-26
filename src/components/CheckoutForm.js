@@ -240,7 +240,7 @@ export default function CheckoutForm({ settings }) {
               <div className="checkout-form-group">
                 <label className="checkout-label">Phone Number <span className="text-danger">*</span></label>
                 <input
-                  type="tel"
+                  type="tel" pattern="[+]?[0-9 ]{7,15}"
                   className="checkout-input"
                   value={customer.phone}
                   onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}

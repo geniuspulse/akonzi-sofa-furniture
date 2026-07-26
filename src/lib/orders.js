@@ -13,7 +13,7 @@ const API_BASE = 'https://api.github.com';
 
 const ordersPath = path.join(process.cwd(), 'data', 'orders.json');
 
-// Read orders from local file (for display in admin)
+// Read orders from local file (for display in admin / fallback)
 export function getOrdersLocal() {
   try {
     if (fs.existsSync(ordersPath)) {
@@ -22,6 +22,28 @@ export function getOrdersLocal() {
     }
   } catch {}
   return [];
+}
+
+// Fetch orders from GitHub API (authoritative source on serverless)
+async function getOrdersFromGitHub() {
+  if (!GITHUB_TOKEN) return null;
+  try {
+    const res = await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/orders.json?ref=${GITHUB_BRANCH}`);
+    const content = Buffer.from(res.content, 'base64').toString('utf-8');
+    return { orders: JSON.parse(content), sha: res.sha };
+  } catch (err) {
+    // File may not exist yet
+    return { orders: [], sha: null };
+  }
+}
+
+// Get orders — tries GitHub first, falls back to local
+export async function getOrders() {
+  if (GITHUB_TOKEN) {
+    const result = await getOrdersFromGitHub();
+    if (result) return result.orders;
+  }
+  return getOrdersLocal();
 }
 
 // Generate order ID
@@ -34,7 +56,6 @@ export function generateOrderId() {
   return `ORD-${year}${month}${day}-${random}`;
 }
 
-// Save order to GitHub (creates/updates data/orders.json)
 async function githubFetch(endpoint, options = {}) {
   if (!GITHUB_TOKEN) {
     throw new Error('GITHUB_TOKEN environment variable is not set');
@@ -64,21 +85,13 @@ export async function createOrder(orderData) {
     createdAt: new Date().toISOString(),
   };
 
-  // Read current orders from local file
-  const currentOrders = getOrdersLocal();
-  const updatedOrders = [...currentOrders, order];
-
   if (GITHUB_TOKEN) {
-    const filePath = 'data/orders.json';
+    // CRITICAL: Fetch current orders from GitHub (not local file) to avoid overwriting
+    const { orders: currentOrders, sha } = await getOrdersFromGitHub();
+    const updatedOrders = [...(currentOrders || []), order];
     const content = JSON.stringify(updatedOrders, null, 2);
-    
-    let sha = null;
-    try {
-      const existing = await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`);
-      sha = existing.sha;
-    } catch {}
 
-    await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
+    await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/orders.json`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -89,7 +102,9 @@ export async function createOrder(orderData) {
       }),
     });
   } else {
-    // Fallback: write to local file
+    // Fallback: write to local file (dev only)
+    const currentOrders = getOrdersLocal();
+    const updatedOrders = [...currentOrders, order];
     fs.writeFileSync(ordersPath, JSON.stringify(updatedOrders, null, 2));
   }
 
@@ -97,22 +112,15 @@ export async function createOrder(orderData) {
 }
 
 export async function updateOrderStatus(orderId, status) {
-  const currentOrders = getOrdersLocal();
-  const updatedOrders = currentOrders.map(o =>
-    o.id === orderId ? { ...o, status, updatedAt: new Date().toISOString() } : o
-  );
-
   if (GITHUB_TOKEN) {
-    const filePath = 'data/orders.json';
+    // Fetch from GitHub to get the latest orders (not stale local copy)
+    const { orders: currentOrders, sha } = await getOrdersFromGitHub();
+    const updatedOrders = (currentOrders || []).map(o =>
+      o.id === orderId ? { ...o, status, updatedAt: new Date().toISOString() } : o
+    );
     const content = JSON.stringify(updatedOrders, null, 2);
-    
-    let sha = null;
-    try {
-      const existing = await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}?ref=${GITHUB_BRANCH}`);
-      sha = existing.sha;
-    } catch {}
 
-    await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
+    await githubFetch(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/orders.json`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -123,10 +131,12 @@ export async function updateOrderStatus(orderId, status) {
       }),
     });
   } else {
+    const currentOrders = getOrdersLocal();
+    const updatedOrders = currentOrders.map(o =>
+      o.id === orderId ? { ...o, status, updatedAt: new Date().toISOString() } : o
+    );
     fs.writeFileSync(ordersPath, JSON.stringify(updatedOrders, null, 2));
   }
-
-  return updatedOrders.find(o => o.id === orderId);
 }
 
 // Build WhatsApp order message

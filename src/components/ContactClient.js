@@ -75,7 +75,7 @@ export default function ContactClient({ settings }) {
                 </div>
                 <div className="form-group">
                   <label>Phone Number</label>
-                  <input type="tel" placeholder="+265 ..." required value={form.phone} onChange={e => setForm(p => ({...p, phone: e.target.value}))} />
+                  <input type="tel" pattern="[+]?[0-9 ]{7,15}" placeholder="+265 ..." required value={form.phone} onChange={e => setForm(p => ({...p, phone: e.target.value}))} />
                 </div>
                 <div className="form-group">
                   <label>Interested In</label>

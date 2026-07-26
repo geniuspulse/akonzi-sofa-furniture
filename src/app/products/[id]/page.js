@@ -50,7 +50,7 @@ export default async function ProductDetailPage({ params }) {
             <span style={{ color: 'var(--brown)', fontWeight: 500 }}>{product.name}</span>
           </div>
 
-          <ProductDetailClient product={product} relatedProducts={related} />
+          <ProductDetailClient product={product} relatedProducts={related} settings={settings} />
         </div>
       </main>
 

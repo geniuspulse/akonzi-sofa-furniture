@@ -5,7 +5,7 @@ import { useCart } from '@/components/CartProvider';
 import { whatsappLink } from '@/lib/config';
 import ProductCard from '@/components/ProductCard';
 
-export default function ProductDetailClient({ product, relatedProducts }) {
+export default function ProductDetailClient({ product, relatedProducts, settings }) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
@@ -61,7 +61,7 @@ export default function ProductDetailClient({ product, relatedProducts }) {
         message += ` - ${key}: ${value}\n`;
       });
     }
-    const url = whatsappLink(message);
+    const url = whatsappLink(message, settings?.whatsapp);
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 

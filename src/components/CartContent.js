@@ -76,7 +76,7 @@ export default function CartContent({ settings }) {
               <div className="cart-item" key={item.key}>
                 {/* Product info with image */}
                 <div className="cart-item-product">
-                  <img src={item.image || '/images/placeholder.jpg'} alt={item.name} className="cart-item-img" />
+                  <img src={item.image || 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZjVlZmUwIi8+PHRleHQgeD0iMTQiIHk9IjM2IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iOTk5Ij5ObyBJbWc8L3RleHQ+PC9zdmc+'} alt={item.name} className="cart-item-img" />
                   <div className="cart-item-details">
                     <div className="cart-item-name">{item.name}</div>
                     {item.selectedVariations && Object.keys(item.selectedVariations).length > 0 && (
