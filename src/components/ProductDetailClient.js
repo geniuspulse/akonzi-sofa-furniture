@@ -51,8 +51,6 @@ export default function ProductDetailClient({ product, relatedProducts, settings
     setAddedToCart(true);
   };
 
-  const [whatsappLoading, setWhatsappLoading] = useState(false);
-
   const handleWhatsAppOrder = async () => {
     setWhatsappLoading(true);
     try {
@@ -268,7 +266,7 @@ export default function ProductDetailClient({ product, relatedProducts, settings
               <a
                 href="/cart"
                 className="btn btn-primary"
-                style={{ flex: '1', minWidth: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
+                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
@@ -282,19 +280,12 @@ export default function ProductDetailClient({ product, relatedProducts, settings
                 className="btn btn-primary"
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
-                style={{ flex: '1', minWidth: '180px', opacity: !product.inStock ? 0.5 : 1, cursor: !product.inStock ? 'not-allowed' : 'pointer' }}
+                style={{ width: '100%', opacity: !product.inStock ? 0.5 : 1, cursor: !product.inStock ? 'not-allowed' : 'pointer' }}
               >
                 Add to Cart
               </button>
             )}
-            <button
-              onClick={handleWhatsAppOrder}
-              className="btn btn-whatsapp"
-              style={{ flex: '1', minWidth: '180px', opacity: whatsappLoading ? 0.7 : 1, cursor: whatsappLoading ? 'wait' : 'pointer' }}
-              disabled={whatsappLoading}
-            >
-              {whatsappLoading ? 'Preparing order...' : 'Order via WhatsApp'}
-            </button>
+
           </div>
         </div>
       </div>
