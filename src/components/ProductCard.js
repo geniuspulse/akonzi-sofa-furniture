@@ -52,7 +52,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="product-card">
-      <div className="product-image">
+      <Link href={`/products/${id}`} className="product-image" style={{ display: 'block', textDecoration: 'none' }}>
         {badgeText && (
           <span
             className="product-badge"
@@ -62,7 +62,7 @@ export default function ProductCard({ product }) {
           </span>
         )}
         <img src={image || (product.images && product.images[0])} alt={name} />
-      </div>
+      </Link>
       <div className="product-info">
         <h3 className="product-name">{name}</h3>
 
@@ -113,7 +113,7 @@ export default function ProductCard({ product }) {
                   : { background: 'var(--brown)', color: '#fff' }
               }
             >
-              {added ? 'Added ✓' : 'Order'}
+              {added ? 'Added ✓' : 'Make an Order'}
             </button>
           </div>
         </div>

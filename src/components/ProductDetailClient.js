@@ -282,7 +282,7 @@ export default function ProductDetailClient({ product, relatedProducts, settings
                 disabled={!product.inStock}
                 style={{ width: '100%', opacity: !product.inStock ? 0.5 : 1, cursor: !product.inStock ? 'not-allowed' : 'pointer' }}
               >
-                Add to Cart
+                Make an Order
               </button>
             )}
 

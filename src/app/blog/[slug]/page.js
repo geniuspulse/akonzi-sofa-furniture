@@ -34,8 +34,24 @@ export default function BlogPostPage({ params }) {
 
   const ctaLink = whatsappLink(`Hi Akonzi! I just read your article "${post.title}" and would like to order or ask about your sofas.`);
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://akonzi-sofa-furniture.vercel.app';
+  const postJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || '',
+    author: { '@type': 'Person', name: post.author || 'Akonzi Team' },
+    datePublished: post.date,
+    url: `${baseUrl}/blog/${post.slug}`,
+    publisher: { '@type': 'Organization', name: 'Akonzi Sofa Furniture' },
+  };
+
   return (
       <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(postJsonLd) }}
+        />
         <Navbar />
 
       <main style={{ minHeight: '80vh', padding: '0 24px 80px' }}>

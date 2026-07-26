@@ -34,8 +34,34 @@ export default async function ProductDetailPage({ params }) {
   const related = getRelatedProducts(product, 4);
   const settings = getSettings();
 
+  const effectivePrice = (product.salePrice && product.salePrice < product.price) ? product.salePrice : product.price;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://akonzi-sofa-furniture.vercel.app';
+  const productJsonLd = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description || '',
+    image: product.image || (product.images && product.images[0]) ? [`${baseUrl}${product.image || product.images[0]}`] : [],
+    sku: product.id,
+    brand: { '@type': 'Brand', name: 'Akonzi Sofa Furniture' },
+    category: product.category || 'Furniture',
+    offers: {
+      '@type': 'Offer',
+      url: `${baseUrl}/products/${product.id}`,
+      priceCurrency: 'MWK',
+      price: effectivePrice || 0,
+      availability: product.inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: { '@type': 'Organization', name: 'Akonzi Sofa Furniture' },
+    },
+  };
+
   return (
       <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
         <Navbar settings={settings} />
 
       <main style={{ paddingTop: '140px', paddingBottom: '60px' }}>

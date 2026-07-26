@@ -5,6 +5,15 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 
+export const metadata = {
+  title: 'Blog | Akonzi Sofa Furniture',
+  description: 'Tips, guides, and inspiration for choosing quality furniture in Lilongwe, Malawi. Learn about sofa sets, dining sets, beds, and more from Akonzi.',
+  openGraph: {
+    title: 'Blog | Akonzi Sofa Furniture',
+    description: 'Tips, guides, and inspiration for choosing quality furniture in Lilongwe, Malawi.',
+  },
+};
+
 export default function BlogListingPage() {
   const settings = getSettings();
   const posts = getAllPosts();
@@ -44,11 +53,11 @@ export default function BlogListingPage() {
                 {posts.map((post) => (
                   <article key={post.slug} className="blog-card">
                     {/* Visual Placeholder for Blog Post */}
-                    <div className="blog-card-image">
+                    <Link href={`/blog/${post.slug}`} className="blog-card-image" style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
                       <span style={{ fontSize: '3.5rem', fontWeight: 'bold', fontFamily: 'var(--font-heading)' }}>
                         {post.title.charAt(0)}
                       </span>
-                    </div>
+                    </Link>
                     
                     {/* Card Content */}
                     <div className="blog-card-content">
