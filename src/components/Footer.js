@@ -22,7 +22,7 @@ export default function Footer({ settings: propSettings }) {
               />
             </Link>
             <p className="footer-tagline">{settings.tagline}</p>
-            <p style={{ fontSize: '0.9rem', opacity: 0.7, marginTop: '8px' }}>{settings.address}</p>
+            <p style={{ fontSize: '0.9rem', opacity: 0.7, marginTop: '8px' }}>{settings.location || 'Lilongwe, Malawi'}</p>
           </div>
 
           {/* Explore */}
@@ -48,9 +48,8 @@ export default function Footer({ settings: propSettings }) {
             <h4>Connect</h4>
             <a href={settings.facebook} target="_blank" rel="noopener">Facebook</a>
             <a href={settings.instagram} target="_blank" rel="noopener">Instagram</a>
-            <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noopener">WhatsApp</a>
-            <a href={`tel:${settings.phone}`}>{settings.phone}</a>
-            <a href={`mailto:${settings.email}`}>{settings.email}</a>
+            <a href={`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent("Hello! I'd like to enquire about your furniture.")}`} target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+            <a href="/contact">Contact Us</a>
           </div>
         </div>
 

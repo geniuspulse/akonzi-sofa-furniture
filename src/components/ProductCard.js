@@ -110,7 +110,7 @@ export default function ProductCard({ product }) {
                 color: 'var(--brown)',
               }}
             >
-              View Details
+              View
             </Link>
             <button
               onClick={handleAddToCart}
@@ -122,7 +122,7 @@ export default function ProductCard({ product }) {
                   : { background: 'var(--brown)', color: '#fff' }
               }
             >
-              {added ? 'Added!' : 'Add to Cart'}
+              {added ? 'Added' : 'Order'}
             </button>
           </div>
         </div>
