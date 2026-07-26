@@ -1,0 +1,74 @@
+[
+  {
+    "id": "3-seater-sofa",
+    "name": "3-Seater Sofa",
+    "description": "Classic comfort seating with premium upholstery. Handcrafted for your living room with durable wood framing and high-density foam cushions.",
+    "price": 16000,
+    "currency": "MWK",
+    "image": "/images/sofa-3seater.png",
+    "category": "Sofas",
+    "badge": "Popular",
+    "inStock": true,
+    "featured": true
+  },
+  {
+    "id": "3-plus-2-sofa-set",
+    "name": "3+2+ Seater Sofa Set",
+    "description": "Complete living room set with a 3-seater and 2-seater. Perfect for family spaces. Matching design and premium fabric.",
+    "price": 26000,
+    "currency": "MWK",
+    "image": "/images/hero-showroom.png",
+    "category": "Sofa Sets",
+    "badge": "Best Value",
+    "inStock": true,
+    "featured": true
+  },
+  {
+    "id": "3-plus-1-plus-1-sofa-set",
+    "name": "3+1+1 Seater Sofa Set",
+    "description": "Versatile set with a 3-seater plus two single seats. Flexible seating arrangement for any room layout.",
+    "price": 26000,
+    "currency": "MWK",
+    "image": "/images/sofa-3seater.png",
+    "category": "Sofa Sets",
+    "badge": null,
+    "inStock": true,
+    "featured": false
+  },
+  {
+    "id": "dining-set",
+    "name": "Dining Set",
+    "description": "Solid wood dining table with four chairs. Warm mahogany finish. Seats 4-6 comfortably. Built to last generations.",
+    "price": null,
+    "currency": "MWK",
+    "image": "/images/dining-set.png",
+    "category": "Dining",
+    "badge": "New",
+    "inStock": true,
+    "featured": true
+  },
+  {
+    "id": "coffee-table",
+    "name": "Coffee Table",
+    "description": "Handcrafted wooden coffee table with warm amber finish. The perfect centerpiece for your living room.",
+    "price": null,
+    "currency": "MWK",
+    "image": "/images/coffee-table.png",
+    "category": "Tables",
+    "badge": null,
+    "inStock": true,
+    "featured": false
+  },
+  {
+    "id": "bed-frame",
+    "name": "Upholstered Bed Frame",
+    "description": "Elegant bed frame with tufted headboard. Customizable fabric and color options. Premium comfort and style.",
+    "price": null,
+    "currency": "MWK",
+    "image": "/images/bed-frame.png",
+    "category": "Bedroom",
+    "badge": "Premium",
+    "inStock": true,
+    "featured": true
+  }
+]
