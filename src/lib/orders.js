@@ -52,7 +52,7 @@ export function generateOrderId() {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 9000) + 1000;
+  const random = Math.floor(Math.random() * 900000) + 100000;
   return `ORD-${year}${month}${day}-${random}`;
 }
 
@@ -148,10 +148,10 @@ export function buildWhatsAppOrderMessage(order) {
   msg += `----------------------------------\n\n`;
 
   msg += `*ORDER SUMMARY*\n`;
-  order.items.forEach((item, i) => {
+  (order.items || []).forEach((item, i) => {
     const unitPrice = item.price ? `MWK ${Number(item.price).toLocaleString()}` : 'Price on request';
-    const lineTotal = item.price ? `MWK ${(item.price * item.quantity).toLocaleString()}` : 'TBD';
-    msg += `\n${i + 1}. *${item.name}*\n`;
+    const lineTotal = item.price ? `MWK ${(item.price * (item.quantity || 1)).toLocaleString()}` : 'TBD';
+    msg += `\n${i + 1}. *${item.name || 'Unknown product'}*\n`;
     if (item.selectedVariations && Object.keys(item.selectedVariations).length > 0) {
       Object.entries(item.selectedVariations).forEach(([k, v]) => {
         msg += `   - ${k}: ${v}\n`;
@@ -173,13 +173,13 @@ export function buildWhatsAppOrderMessage(order) {
   msg += `----------------------------------\n\n`;
 
   msg += `*CUSTOMER*\n`;
-  msg += `Name: ${order.customer.name}\n`;
-  msg += `Phone: ${order.customer.phone}\n`;
-  if (order.customer.email) msg += `Email: ${order.customer.email}\n`;
-  if (order.customer.address) msg += `Address: ${order.customer.address}\n`;
+  msg += `Name: ${order.customer?.name || 'Not provided'}\n`;
+  msg += `Phone: ${order.customer?.phone || 'Not provided'}\n`;
+  if (order.customer?.email) msg += `Email: ${order.customer.email}\n`;
+  if (order.customer?.address) msg += `Address: ${order.customer.address}\n`;
 
   msg += `\n*DELIVERY*\n`;
-  msg += `Zone: ${order.delivery.zone || 'Lilongwe'}\n`;
+  msg += `Zone: ${order.delivery?.zone || 'Lilongwe'}\n`;
   if (order.delivery.preferredDate) {
     const d = new Date(order.delivery.preferredDate);
     msg += `Date: ${d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}\n`;

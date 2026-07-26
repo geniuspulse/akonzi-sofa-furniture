@@ -5,7 +5,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import ProductCard from '@/components/ProductCard';
-import { CartProvider } from '@/components/CartProvider';
 
 export default function HomePage() {
   const settings = getSettings();
@@ -31,8 +30,8 @@ export default function HomePage() {
   const heroWhatsappUrl = whatsappLink(heroWhatsappMessage, settings.whatsapp);
 
   return (
-    <CartProvider>
-      <Navbar settings={settings} />
+      <>
+        <Navbar settings={settings} />
       
       {/* Hero Section */}
       <header className="hero">
@@ -251,6 +250,7 @@ export default function HomePage() {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

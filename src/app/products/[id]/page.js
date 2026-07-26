@@ -2,7 +2,6 @@ import { getProductById, getRelatedProducts, getSettings, getProducts } from '@/
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { CartProvider } from '@/components/CartProvider';
 import ProductDetailClient from '@/components/ProductDetailClient';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -36,8 +35,8 @@ export default async function ProductDetailPage({ params }) {
   const settings = getSettings();
 
   return (
-    <CartProvider>
-      <Navbar settings={settings} />
+      <>
+        <Navbar settings={settings} />
 
       <main style={{ paddingTop: '140px', paddingBottom: '60px' }}>
         <div className="container">
@@ -56,6 +55,7 @@ export default async function ProductDetailPage({ params }) {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

@@ -4,7 +4,6 @@ import { siteConfig, whatsappLink } from '@/lib/data';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { CartProvider } from '@/components/CartProvider';
 
 export default function AboutPage() {
   const settings = getSettings();
@@ -12,8 +11,8 @@ export default function AboutPage() {
   const aboutWhatsappUrl = whatsappLink(aboutWhatsappMessage, settings.whatsapp);
 
   return (
-    <CartProvider>
-      <Navbar />
+      <>
+        <Navbar />
       
       {/* Page Header */}
       <section className="section section-cream" style={{ paddingTop: '140px', paddingBottom: '60px' }}>
@@ -167,6 +166,7 @@ export default function AboutPage() {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

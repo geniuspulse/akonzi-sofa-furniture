@@ -9,7 +9,6 @@ import {
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { CartProvider } from '@/components/CartProvider';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 
@@ -37,8 +36,8 @@ export default async function ProductsPage({ searchParams }) {
   };
 
   return (
-    <CartProvider>
-      <Navbar settings={settings} />
+      <>
+        <Navbar settings={settings} />
 
       {/* Page Header */}
       <section className="section section-cream" style={{ paddingTop: '120px', paddingBottom: '40px' }}>
@@ -212,6 +211,7 @@ export default async function ProductsPage({ searchParams }) {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

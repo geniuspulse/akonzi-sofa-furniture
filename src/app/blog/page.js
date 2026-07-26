@@ -1,7 +1,6 @@
 import { getSettings } from '@/lib/settings';
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/data';
-import { CartProvider } from '@/components/CartProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -21,8 +20,8 @@ export default function BlogListingPage() {
   };
 
   return (
-    <CartProvider>
-      <Navbar />
+      <>
+        <Navbar />
       
       <main style={{ minHeight: '80vh' }}>
         {/* Header Section */}
@@ -75,6 +74,7 @@ export default function BlogListingPage() {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

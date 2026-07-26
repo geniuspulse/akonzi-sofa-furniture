@@ -2,7 +2,6 @@ import { getSettings } from '@/lib/settings';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPostBySlug, getAllPosts, whatsappLink } from '@/lib/data';
-import { CartProvider } from '@/components/CartProvider';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
@@ -36,8 +35,8 @@ export default function BlogPostPage({ params }) {
   const ctaLink = whatsappLink(`Hi Akonzi! I just read your article "${post.title}" and would like to order or ask about your sofas.`);
 
   return (
-    <CartProvider>
-      <Navbar />
+      <>
+        <Navbar />
 
       <main style={{ minHeight: '80vh', padding: '0 24px 80px' }}>
         <article className="blog-post" style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -134,6 +133,7 @@ export default function BlogPostPage({ params }) {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

@@ -2,15 +2,14 @@ import { getSettings } from '@/lib/settings';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { CartProvider } from '@/components/CartProvider';
 import CheckoutForm from '@/components/CheckoutForm';
 
 export default async function CheckoutPage() {
   const settings = getSettings();
 
   return (
-    <CartProvider>
-      <Navbar settings={settings} />
+      <>
+        <Navbar settings={settings} />
       
       <main className="checkout-page" style={{ paddingTop: '140px', minHeight: '80vh', paddingBottom: '80px' }}>
         <div className="container">
@@ -26,6 +25,7 @@ export default async function CheckoutPage() {
 
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

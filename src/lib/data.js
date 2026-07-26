@@ -11,16 +11,24 @@ export { siteConfig, whatsappLink, getSettings };
 const productsPath = path.join(process.cwd(), 'data', 'products.json');
 
 export function getProducts() {
-  const rawData = fs.readFileSync(productsPath, 'utf-8');
-  const products = JSON.parse(rawData);
-  // Ensure backward compat: if no images array, create from image field
-  return products.map(p => ({
-    ...p,
-    images: p.images || (p.image ? [p.image] : []),
-    variations: p.variations || [],
-    specifications: p.specifications || {},
-    stockCount: p.stockCount !== undefined ? p.stockCount : (p.inStock ? 10 : 0),
-  }));
+  try {
+    const rawData = fs.readFileSync(productsPath, 'utf-8');
+    const products = JSON.parse(rawData);
+    // Ensure backward compat: if no images array, create from image field
+    return products.map(p => ({
+      ...p,
+      images: p.images || (p.image ? [p.image] : []),
+      variations: p.variations || [],
+      specifications: p.specifications || {},
+      category: p.category || 'Uncategorized',
+      description: p.description || '',
+      price: p.price || null,
+      stockCount: p.stockCount !== undefined ? p.stockCount : (p.inStock ? 10 : 0),
+    }));
+  } catch (err) {
+    console.error('Error reading products.json:', err);
+    return [];
+  }
 }
 
 export function getProductById(id) {
@@ -57,9 +65,9 @@ export function searchProducts(query, category = '', sortBy = 'featured') {
   if (query) {
     const q = query.toLowerCase();
     products = products.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q)
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.description || '').toLowerCase().includes(q) ||
+      (p.category || '').toLowerCase().includes(q)
     );
   }
 

@@ -3,7 +3,6 @@ import { getSettings } from '@/lib/settings';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
-import { CartProvider } from '@/components/CartProvider';
 import ContactClient from '@/components/ContactClient';
 
 export const metadata = {
@@ -14,11 +13,12 @@ export const metadata = {
 export default function ContactPage() {
   const settings = getSettings();
   return (
-    <CartProvider>
-      <Navbar />
+      <>
+        <Navbar />
       <ContactClient settings={settings} />
       <Footer settings={settings} />
       <WhatsAppFloat whatsapp={settings.whatsapp} businessName={settings.name} />
-    </CartProvider>
+    </>
+
   );
 }

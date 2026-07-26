@@ -64,7 +64,7 @@ export default function ProductDetailClient({ product, relatedProducts, settings
           items: [{
             id: product.id,
             name: product.name,
-            price: product.price,
+            price: (product.salePrice && product.salePrice < product.price) ? product.salePrice : product.price,
             quantity: quantity,
             selectedVariations: selectedVariations || {},
           }],
